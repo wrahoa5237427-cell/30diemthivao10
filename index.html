@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prep10 - Hệ Thống Luyện Thi Vào 10 Toàn Diện</title>
+    <title>ACES Education - Hệ Thống Luyện Thi Toàn Diện</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- Dùng phông chữ Inter hoặc Plus Jakarta cho cảm giác hiện đại, Edtech -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <script>
         tailwind.config = {
@@ -19,7 +18,7 @@
                             50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3',
                         },
                         secondary: {
-                            500: '#0ea5e9', 600: '#0284c7', // Đổi sang tone xanh dương nhạt cho mượt
+                            500: '#0ea5e9', 600: '#0284c7', 
                         }
                     },
                     boxShadow: {
@@ -68,9 +67,13 @@
         }
         
         /* Modal Overlay */
-        .modal-overlay { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); }
+        .modal-overlay { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); }
         .fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        
+        /* Menu Mobile Animation */
+        .mobile-menu-enter { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease-in-out; }
+        .mobile-menu-enter.open { max-height: 500px; opacity: 1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans text-gray-800 selection:bg-primary-500 selection:text-white">
@@ -79,19 +82,23 @@
     <nav id="navbar" class="glass-nav fixed top-0 w-full z-40 border-b border-gray-100 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 sm:h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-2 cursor-pointer group" onclick="window.location.reload()">
-                    <div class="bg-gradient-to-br from-primary-500 to-secondary-500 text-white p-2.5 rounded-xl shadow-md group-hover:shadow-glow transition-all duration-300">
-                        <i class="fa-solid fa-graduation-cap text-xl"></i>
+                
+                <!-- Logo ACES Education -->
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.reload()">
+                    <div class="bg-gradient-to-br from-primary-600 to-primary-800 text-white p-2.5 rounded-xl shadow-md group-hover:shadow-glow transition-all duration-300">
+                        <i class="fa-solid fa-layer-group text-xl"></i>
                     </div>
-                    <span class="font-extrabold text-2xl text-gray-900 tracking-tight ml-1">Prep<span class="text-primary-600">10</span></span>
+                    <div class="flex flex-col leading-none">
+                        <span class="font-black text-2xl tracking-widest text-primary-700">ACES</span>
+                        <span class="font-semibold text-[10px] tracking-[0.2em] text-gray-500 uppercase mt-0.5">Education</span>
+                    </div>
                 </div>
                 
                 <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center space-x-1 font-semibold text-gray-500">
-                    <button onclick="switchTab('dethi', this)" class="nav-item px-4 py-2 rounded-full bg-primary-50 text-primary-600 transition-all">Kho Đề Thi</button>
-                    <button onclick="switchTab('khoahoc', this)" class="nav-item px-4 py-2 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all">Lộ Trình Học</button>
-                    <button onclick="switchTab('tailieu', this)" class="nav-item px-4 py-2 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all">Tài Liệu VIP</button>
+                    <button onclick="switchTab('dethi', this)" class="nav-item px-5 py-2.5 rounded-full bg-primary-50 text-primary-600 transition-all">Kho Đề Thi</button>
+                    <button onclick="switchTab('khoahoc', this)" class="nav-item px-5 py-2.5 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all">Lộ Trình Học</button>
+                    <button onclick="switchTab('tailieu', this)" class="nav-item px-5 py-2.5 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all">Tài Liệu VIP</button>
                 </div>
 
                 <!-- Right actions -->
@@ -106,13 +113,13 @@
                     
                     <!-- Auth Section (Sẽ được JS thay thế khi đăng nhập) -->
                     <div id="auth-section">
-                        <button onclick="openModal('authModal')" class="hidden sm:flex items-center gap-2 bg-primary-600 text-white px-5 py-2.5 rounded-full font-bold hover:bg-primary-700 transition shadow-md hover:shadow-glow text-sm">
+                        <button onclick="openModal('authModal')" class="hidden sm:flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 rounded-full font-bold hover:bg-primary-600 transition-all shadow-md text-sm">
                             Đăng nhập
                         </button>
                     </div>
                     
                     <!-- Hamburger Icon (Mobile) -->
-                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 text-2xl p-2 focus:outline-none" onclick="toggleMobileMenu()">
+                    <button id="mobile-menu-btn" class="md:hidden text-gray-600 text-2xl p-2 focus:outline-none hover:text-primary-600 transition-colors" onclick="toggleMobileMenu()">
                         <i class="fa-solid fa-bars-staggered"></i>
                     </button>
                 </div>
@@ -120,15 +127,16 @@
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-100 shadow-xl absolute w-full left-0 top-full">
-            <div class="px-4 py-4 space-y-1 flex flex-col font-semibold text-gray-600">
-                <a href="#" onclick="switchTab('dethi', this); toggleMobileMenu()" class="block px-4 py-3 rounded-xl bg-primary-50 text-primary-600">Kho Đề Thi</a>
-                <a href="#" onclick="switchTab('khoahoc', this); toggleMobileMenu()" class="block px-4 py-3 rounded-xl hover:bg-gray-50">Lộ Trình Học</a>
-                <a href="#" onclick="switchTab('tailieu', this); toggleMobileMenu()" class="block px-4 py-3 rounded-xl hover:bg-gray-50">Tài Liệu VIP</a>
-                <hr class="my-2">
-                <!-- Nút Đăng nhập trên Mobile (Dùng JS để ẩn/hiện tuỳ trạng thái) -->
+        <div id="mobile-menu" class="mobile-menu-enter md:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-2xl absolute w-full left-0 top-full">
+            <div class="px-5 py-6 space-y-2 flex flex-col font-bold text-gray-600">
+                <a href="#" onclick="switchTab('dethi', this); toggleMobileMenu()" class="block px-4 py-3.5 rounded-2xl bg-primary-50 text-primary-600 transition-colors">Kho Đề Thi</a>
+                <a href="#" onclick="switchTab('khoahoc', this); toggleMobileMenu()" class="block px-4 py-3.5 rounded-2xl hover:bg-gray-50 transition-colors">Lộ Trình Học</a>
+                <a href="#" onclick="switchTab('tailieu', this); toggleMobileMenu()" class="block px-4 py-3.5 rounded-2xl hover:bg-gray-50 transition-colors">Tài Liệu VIP</a>
+                <div class="w-full h-px bg-gray-100 my-4"></div>
+                
+                <!-- Nút Đăng nhập trên Mobile -->
                 <div id="mobile-auth-section">
-                    <button onclick="openModal('authModal'); toggleMobileMenu()" class="w-full text-left block px-4 py-3 rounded-xl text-primary-600 font-bold hover:bg-gray-50">Đăng nhập / Đăng ký</button>
+                    <button onclick="openModal('authModal'); toggleMobileMenu()" class="w-full block px-4 py-3.5 rounded-2xl bg-gray-900 text-white text-center hover:bg-primary-600 transition-colors">Đăng nhập / Đăng ký</button>
                 </div>
             </div>
         </div>
@@ -140,57 +148,57 @@
         <!-- ================= PAGE: ĐỀ THI ================= -->
         <div id="page-dethi" class="page-content block">
             
-            <!-- Hero Banner VIP -->
-            <div class="relative bg-gradient-to-br from-primary-800 via-primary-600 to-secondary-500 rounded-[2rem] mt-4 p-8 sm:p-12 lg:p-16 text-white shadow-premium overflow-hidden flex flex-col md:flex-row items-center justify-between fade-in-up">
+            <!-- Hero Banner ACES -->
+            <div class="relative bg-gradient-to-br from-gray-900 via-primary-900 to-primary-700 rounded-[2rem] mt-4 p-8 sm:p-12 lg:p-16 text-white shadow-premium overflow-hidden flex flex-col md:flex-row items-center justify-between fade-in-up">
                 <div class="absolute inset-0 bg-pattern opacity-20"></div>
                 <!-- Vòng tròn trang trí -->
-                <div class="absolute -top-24 -right-24 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl"></div>
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-500 opacity-20 rounded-full blur-3xl"></div>
                 <div class="absolute bottom-0 left-10 w-64 h-64 bg-secondary-500 opacity-20 rounded-full blur-2xl"></div>
 
                 <div class="relative z-10 md:w-3/5">
-                    <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/10 text-white text-sm font-semibold mb-6 backdrop-blur-md border border-white/20 shadow-sm">
+                    <div class="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/10 text-white text-xs tracking-wider uppercase font-bold mb-6 backdrop-blur-md border border-white/20 shadow-sm">
                         <span class="flex h-2 w-2 rounded-full bg-green-400"></span>
-                        Cập nhật cấu trúc đề thi 2026
+                        Nền tảng học tập thế hệ mới
                     </div>
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-[1.15] tracking-tight">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-[1.15] tracking-tight">
                         Chinh phục điểm 9+ <br/>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-100">Kỳ thi vào lớp 10</span>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Cùng ACES Education</span>
                     </h1>
-                    <p class="text-primary-100 text-lg sm:text-xl mb-8 max-w-lg leading-relaxed font-medium">Hệ thống luyện đề thông minh bám sát cấu trúc của các Sở GD&ĐT và trường Chuyên trên toàn quốc.</p>
+                    <p class="text-gray-300 text-lg sm:text-xl mb-8 max-w-lg leading-relaxed font-medium">Hệ thống luyện đề thông minh bám sát cấu trúc của các Sở GD&ĐT và trường Chuyên trên toàn quốc.</p>
                     
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="document.getElementById('khu-vuc-de').scrollIntoView({behavior: 'smooth'})" class="bg-white text-primary-700 font-bold text-lg py-3.5 px-8 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2">
-                            Bắt đầu thi thử <i class="fa-solid fa-arrow-right"></i>
+                        <button onclick="document.getElementById('khu-vuc-de').scrollIntoView({behavior: 'smooth'})" class="bg-white text-gray-900 font-bold text-lg py-4 px-8 rounded-full shadow-xl hover:shadow-glow hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3">
+                            Bắt đầu làm bài <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Cột phải: Thông số Ảo -->
+                <!-- Cột phải: Thông số -->
                 <div class="hidden md:flex relative z-10 w-2/5 justify-end">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-center transform translate-y-4 shadow-xl">
-                            <i class="fa-solid fa-file-signature text-3xl text-yellow-300 mb-2"></i>
-                            <div class="text-2xl font-bold">500+</div>
-                            <div class="text-primary-100 text-sm">Đề thi chuẩn</div>
+                        <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-6 rounded-3xl text-center transform translate-y-4 shadow-xl">
+                            <i class="fa-solid fa-file-signature text-3xl text-blue-400 mb-3"></i>
+                            <div class="text-2xl font-black">500+</div>
+                            <div class="text-gray-400 text-sm font-medium">Đề thi chuẩn</div>
                         </div>
-                        <div class="bg-white/10 backdrop-blur-md border border-white/20 p-5 rounded-2xl text-center transform -translate-y-4 shadow-xl">
-                            <i class="fa-solid fa-users text-3xl text-green-300 mb-2"></i>
-                            <div class="text-2xl font-bold">12K+</div>
-                            <div class="text-primary-100 text-sm">Học sinh</div>
+                        <div class="bg-white/5 backdrop-blur-lg border border-white/10 p-6 rounded-3xl text-center transform -translate-y-4 shadow-xl">
+                            <i class="fa-solid fa-users text-3xl text-emerald-400 mb-3"></i>
+                            <div class="text-2xl font-black">12K+</div>
+                            <div class="text-gray-400 text-sm font-medium">Học viên ACES</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Thanh Công cụ Lọc & Tìm kiếm VIP -->
+            <!-- Thanh Công cụ Lọc & Tìm kiếm -->
             <div id="khu-vuc-de" class="mt-12 sm:mt-16 flex flex-col lg:flex-row justify-between items-center gap-6 mb-8 scroll-mt-24">
                 
                 <!-- Bộ lọc môn học -->
                 <div class="flex items-center gap-2 overflow-x-auto hide-scroll w-full lg:w-auto pb-2 lg:pb-0 px-1">
-                    <button onclick="handleFilter('all', this)" class="filter-btn shrink-0 bg-gray-900 text-white px-6 py-2.5 rounded-full font-semibold shadow-md transition-all">Tất cả</button>
-                    <button onclick="handleFilter('toan', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-semibold transition-all shadow-sm">📐 Toán Học</button>
-                    <button onclick="handleFilter('van', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-semibold transition-all shadow-sm">✍️ Ngữ Văn</button>
-                    <button onclick="handleFilter('anh', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-semibold transition-all shadow-sm">🇬🇧 Tiếng Anh</button>
+                    <button onclick="handleFilter('all', this)" class="filter-btn shrink-0 bg-gray-900 text-white px-6 py-2.5 rounded-full font-bold shadow-md transition-all">Tất cả</button>
+                    <button onclick="handleFilter('toan', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-bold transition-all shadow-sm">📐 Toán Học</button>
+                    <button onclick="handleFilter('van', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-bold transition-all shadow-sm">✍️ Ngữ Văn</button>
+                    <button onclick="handleFilter('anh', this)" class="filter-btn shrink-0 bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-6 py-2.5 rounded-full font-bold transition-all shadow-sm">🇬🇧 Tiếng Anh</button>
                 </div>
                 
                 <!-- Thanh tìm kiếm xịn -->
@@ -231,7 +239,7 @@
             <div class="bg-white p-12 rounded-[2rem] text-center shadow-premium border border-gray-100">
                 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Coming Soon" class="w-32 h-32 mx-auto mb-6 opacity-80">
                 <h2 class="text-3xl font-extrabold text-gray-900 mb-4">Lộ Trình Học Chuyên Sâu</h2>
-                <p class="text-gray-500 max-w-md mx-auto">Tính năng hệ thống video bài giảng và bài tập đang được Prep10 hoàn thiện. Sẽ sớm ra mắt trong thời gian tới!</p>
+                <p class="text-gray-500 max-w-md mx-auto">Tính năng hệ thống video bài giảng và bài tập đang được ACES Education hoàn thiện. Sẽ sớm ra mắt trong thời gian tới!</p>
             </div>
         </div>
 
@@ -246,14 +254,14 @@
     </main>
 
     <!-- 🌟 FOOTER -->
-    <footer class="bg-white border-t border-gray-200 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <footer class="bg-white border-t border-gray-200 mt-auto py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="md:flex md:items-center md:justify-between">
-                <div class="flex justify-center md:justify-start mb-6 md:mb-0 items-center gap-2">
-                    <div class="bg-primary-600 text-white p-2 rounded-lg">
-                        <i class="fa-solid fa-graduation-cap"></i>
+                <div class="flex justify-center md:justify-start mb-6 md:mb-0 items-center gap-3">
+                    <div class="bg-gray-900 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <span class="font-extrabold text-xl text-gray-900">Prep<span class="text-primary-600">10</span></span>
+                    <span class="font-black text-xl tracking-widest text-gray-900">ACES<span class="font-semibold tracking-normal text-gray-500 ml-1">Education</span></span>
                 </div>
                 <div class="flex justify-center space-x-6 md:order-2 text-gray-400">
                     <a href="#" class="hover:text-primary-600 transition"><i class="fa-brands fa-facebook text-xl"></i></a>
@@ -262,17 +270,17 @@
                 </div>
             </div>
             <div class="mt-8 border-t border-gray-100 pt-8 md:flex md:items-center md:justify-between">
-                <p class="mt-8 text-base text-gray-400 md:mt-0 md:order-1 text-center md:text-left">
-                    &copy; 2026 Prep10 Education. Thiết kế để giúp bạn đỗ nguyện vọng 1.
+                <p class="text-sm font-medium text-gray-400 md:mt-0 md:order-1 text-center md:text-left">
+                    &copy; 2026 ACES Education. Thiết kế để giúp bạn đỗ nguyện vọng 1.
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- 🌟 AUTH MODAL (Popup Đăng nhập) -->
+    <!-- 🌟 AUTH MODAL (Google + Email + Ẩn danh Khách) -->
     <div id="authModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white w-full max-w-[450px] rounded-[2rem] shadow-premium overflow-hidden fade-in relative border border-gray-100">
-            <button onclick="closeModal('authModal')" class="absolute top-5 right-5 text-gray-400 hover:text-gray-900 transition p-2 bg-gray-50 rounded-full">
+            <button onclick="closeModal('authModal')" class="absolute top-5 right-5 text-gray-400 hover:text-gray-900 transition p-2 bg-gray-50 hover:bg-gray-100 rounded-full">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
 
@@ -281,40 +289,45 @@
                     <div class="inline-flex p-4 rounded-3xl bg-primary-50 text-primary-600 mb-5 text-2xl shadow-sm">
                         <i id="auth-icon" class="fa-solid fa-user-lock"></i>
                     </div>
-                    <h2 id="auth-title" class="text-2xl font-extrabold text-gray-900">Chào mừng trở lại</h2>
-                    <p id="auth-subtitle" class="text-gray-500 mt-2 text-sm font-medium">Đăng nhập để tiếp tục lộ trình cùng Prep10</p>
+                    <h2 id="auth-title" class="text-2xl font-black text-gray-900">Chào mừng trở lại</h2>
+                    <p id="auth-subtitle" class="text-gray-500 mt-2 text-sm font-medium">Đăng nhập để tiếp tục lộ trình cùng ACES</p>
                 </div>
 
-                <!-- Form đăng nhập/đăng ký -->
+                <!-- Form đăng nhập/đăng ký Email -->
                 <form id="auth-form" onsubmit="submitAuth(event)" class="space-y-4">
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1 ml-1">Email của bạn</label>
-                        <input type="email" id="auth-email" required placeholder="name@example.com" class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 focus:outline-none transition font-medium">
+                        <input type="email" id="auth-email" required placeholder="Email của bạn" class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:outline-none transition font-medium bg-gray-50 focus:bg-white">
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1 ml-1">Mật khẩu</label>
-                        <input type="password" id="auth-password" required placeholder="••••••••" class="w-full px-5 py-3.5 rounded-2xl border border-gray-200 focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 focus:outline-none transition font-medium">
+                        <input type="password" id="auth-password" required placeholder="Mật khẩu" class="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 focus:outline-none transition font-medium bg-gray-50 focus:bg-white">
                     </div>
                     
                     <div id="auth-alert" class="hidden p-3 rounded-xl bg-red-50 text-red-600 text-sm font-bold border border-red-100 text-center"></div>
 
-                    <button type="submit" id="auth-submit-btn" class="w-full bg-primary-600 text-white py-3.5 rounded-2xl font-bold text-lg hover:bg-primary-700 transition shadow-lg shadow-primary-500/30 flex justify-center items-center gap-2 mt-2">
+                    <button type="submit" id="auth-submit-btn" class="w-full bg-primary-600 text-white py-3.5 rounded-xl font-bold text-lg hover:bg-primary-700 transition shadow-lg shadow-primary-500/30 flex justify-center items-center gap-2 mt-2">
                         Đăng nhập
                     </button>
                 </form>
 
                 <div class="relative my-6">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
-                    <div class="relative flex justify-center text-sm"><span class="px-4 bg-white text-gray-400 font-bold uppercase tracking-widest text-xs">Hoặc</span></div>
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-200"></div></div>
+                    <div class="relative flex justify-center text-sm"><span class="px-4 bg-white text-gray-400 font-bold uppercase tracking-widest text-[10px]">Hoặc đăng nhập nhanh</span></div>
                 </div>
 
-                <!-- Nút Đăng nhập Google -->
-                <button onclick="googleSignIn()" class="w-full border-2 border-gray-100 py-3.5 rounded-2xl flex items-center justify-center gap-3 font-bold text-gray-700 hover:bg-gray-50 transition">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5" alt="Google">
-                    Tiếp tục với Google
-                </button>
+                <!-- Nút Đăng nhập Google & Học Thử (Ẩn danh) -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="googleSignIn()" class="w-full border border-gray-200 py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-gray-700 hover:bg-gray-50 transition text-sm shadow-sm">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5" alt="Google">
+                        Google
+                    </button>
+                    
+                    <button onclick="guestSignIn()" class="w-full border border-green-100 bg-green-50 py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-green-600 hover:bg-green-100 transition text-sm shadow-sm">
+                        <i class="fa-solid fa-user-astronaut text-lg"></i>
+                        Học thử
+                    </button>
+                </div>
 
-                <p class="text-center mt-6 text-gray-600 font-medium text-sm">
+                <p class="text-center mt-8 text-gray-600 font-medium text-sm">
                     <span id="auth-switch-text">Chưa có tài khoản?</span>
                     <button onclick="toggleAuthMode()" id="auth-switch-btn" class="text-primary-600 font-bold hover:underline ml-1">Đăng ký ngay</button>
                 </p>
@@ -326,7 +339,7 @@
     <script type="module">
         // --- 1. IMPORT FIREBASE ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // --- 2. CẤU HÌNH FIREBASE CỦA BẠN ---
         const firebaseConfig = {
@@ -341,7 +354,7 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        const googleProvider = new GoogleAuthProvider();
 
         // --- 3. STATE (Trạng thái ứng dụng) ---
         window.state = {
@@ -352,6 +365,7 @@
             isLoginMode: true
         };
 
+        // Khôi phục mảng dữ liệu đầy đủ 6 phần tử như bản gốc của bạn
         const allExams = [
             {
                 id: 1, subject: 'anh', subjectLabel: 'Tiếng Anh', 
@@ -420,37 +434,38 @@
             const mobileAuthSection = document.getElementById('mobile-auth-section');
             
             if (window.state.user) {
-                const displayName = window.state.user.displayName || window.state.user.email.split('@')[0];
-                const photoURL = window.state.user.photoURL || `https://ui-avatars.com/api/?name=${displayName}&background=4f46e5&color=fff&bold=true`;
+                const isAnonymous = window.state.user.isAnonymous;
+                const displayName = isAnonymous ? "Học viên (Khách)" : (window.state.user.displayName || window.state.user.email.split('@')[0]);
+                const photoURL = isAnonymous ? "https://ui-avatars.com/api/?name=Guest&background=10b981&color=fff&bold=true" : (window.state.user.photoURL || `https://ui-avatars.com/api/?name=${displayName}&background=4f46e5&color=fff&bold=true`);
                 
                 // Cập nhật Desktop
                 authSection.innerHTML = `
-                    <div class="hidden sm:flex items-center gap-2.5 hover:bg-gray-50 p-1.5 rounded-full transition-colors border border-transparent hover:border-gray-200">
-                        <img src="${photoURL}" alt="Avatar" class="w-9 h-9 rounded-full shadow-sm">
-                        <span class="text-sm font-semibold text-gray-700 max-w-[100px] truncate">${displayName}</span>
-                        <button onclick="logout()" class="ml-1 px-2 py-1 text-gray-400 hover:text-red-500 transition-colors" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></button>
+                    <div class="hidden sm:flex items-center gap-2.5 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200">
+                        <img src="${photoURL}" alt="Avatar" class="w-8 h-8 rounded-full shadow-sm">
+                        <span class="text-sm font-bold text-gray-800 max-w-[100px] truncate">${displayName}</span>
+                        <button onclick="logout()" class="ml-1 px-2 py-1 text-gray-400 hover:text-red-500 transition-colors" title="Đăng xuất"><i class="fa-solid fa-power-off"></i></button>
                     </div>
                 `;
                 
                 // Cập nhật Mobile
                 mobileAuthSection.innerHTML = `
-                    <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center justify-between px-4 py-3 bg-gray-50 rounded-2xl">
                         <div class="flex items-center gap-3">
-                            <img src="${photoURL}" class="w-10 h-10 rounded-full">
+                            <img src="${photoURL}" class="w-10 h-10 rounded-full border border-gray-200">
                             <span class="font-bold text-gray-800">${displayName}</span>
                         </div>
-                        <button onclick="logout(); toggleMobileMenu()" class="text-red-500 font-bold bg-red-50 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-right-from-bracket"></i> Thoát</button>
+                        <button onclick="logout(); toggleMobileMenu()" class="text-red-500 font-bold bg-white shadow-sm border border-red-100 px-3 py-1.5 rounded-lg"><i class="fa-solid fa-power-off"></i> Thoát</button>
                     </div>
                 `;
             } else {
                 // Trở về trạng thái chưa đăng nhập
                 authSection.innerHTML = `
-                    <button onclick="openModal('authModal')" class="hidden sm:flex items-center gap-2 bg-primary-600 text-white px-5 py-2.5 rounded-full font-bold hover:bg-primary-700 transition shadow-md hover:shadow-glow text-sm">
+                    <button onclick="openModal('authModal')" class="hidden sm:flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 rounded-full font-bold hover:bg-primary-600 transition-all shadow-md text-sm">
                         Đăng nhập
                     </button>
                 `;
                 mobileAuthSection.innerHTML = `
-                    <button onclick="openModal('authModal'); toggleMobileMenu()" class="w-full text-left block px-4 py-3 rounded-xl text-primary-600 font-bold hover:bg-gray-50">Đăng nhập / Đăng ký</button>
+                    <button onclick="openModal('authModal'); toggleMobileMenu()" class="w-full block px-4 py-3.5 rounded-2xl bg-gray-900 text-white text-center hover:bg-primary-600 transition-colors">Đăng nhập / Đăng ký</button>
                 `;
             }
         }
@@ -497,12 +512,28 @@
             }
         };
 
-        window.logout = () => signOut(auth);
+        window.guestSignIn = async () => { 
+            try { 
+                await signInAnonymously(auth); 
+                closeModal('authModal'); 
+            } catch (error) { 
+                const alertBox = document.getElementById('auth-alert');
+                alertBox.innerText = "Chưa bật chế độ Anonymous (Ẩn danh) trong Firebase.";
+                alertBox.classList.remove('hidden');
+            }
+        };
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Lỗi Đăng xuất:", error);
+            }
+        };
 
         window.toggleAuthMode = () => {
             window.state.isLoginMode = !window.state.isLoginMode;
             document.getElementById('auth-title').innerText = window.state.isLoginMode ? "Chào mừng trở lại" : "Tạo tài khoản mới";
-            document.getElementById('auth-subtitle').innerText = window.state.isLoginMode ? "Đăng nhập để tiếp tục lộ trình cùng Prep10" : "Hàng ngàn đề thi cực chất đang chờ đón bạn";
             document.getElementById('auth-submit-btn').innerText = window.state.isLoginMode ? "Đăng nhập" : "Đăng ký";
             document.getElementById('auth-switch-text').innerText = window.state.isLoginMode ? "Chưa có tài khoản?" : "Đã có tài khoản?";
             document.getElementById('auth-switch-btn').innerText = window.state.isLoginMode ? "Đăng ký ngay" : "Đăng nhập ngay";
@@ -546,7 +577,7 @@
                     if(exam.tags.length > 0) {
                         tagsHTML = `<div class="absolute top-4 left-4 z-10 flex gap-2">`;
                         exam.tags.forEach(tag => {
-                            tagsHTML += `<span class="${tag.color} text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-md tracking-wide">${tag.text}</span>`;
+                            tagsHTML += `<span class="${tag.color} text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-full shadow-md tracking-wider">${tag.text}</span>`;
                         });
                         tagsHTML += `</div>`;
                     }
@@ -562,7 +593,7 @@
                         ${tagsHTML}
                         <div class="h-48 overflow-hidden relative">
                             <img src="${exam.img}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out">
-                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent"></div>
                             
                             <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <div class="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white cursor-pointer" onclick="batDauThi(${exam.id}, this)">
@@ -579,7 +610,7 @@
                             <h3 class="font-bold text-lg text-gray-900 leading-snug mb-3 line-clamp-2 group-hover:text-primary-600 transition-colors cursor-pointer" title="${exam.title}">${exam.title}</h3>
                             <p class="text-sm text-gray-500 mb-6 line-clamp-2 leading-relaxed">${exam.desc}</p>
                             
-                            <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-sm font-medium text-gray-600 mb-5">
+                            <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between text-sm font-medium text-gray-500 mb-5">
                                 <div class="flex items-center gap-1.5"><i class="fa-regular fa-clock text-gray-400"></i> ${exam.time}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-regular fa-file-lines text-gray-400"></i> ${exam.questions}</div>
                                 <div class="flex items-center gap-1.5"><i class="fa-solid fa-users text-gray-400"></i> ${displayParticipants}</div>
@@ -629,12 +660,12 @@
             const menu = document.getElementById('mobile-menu');
             const icon = document.querySelector('#mobile-menu-btn i');
             
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                icon.className = 'fa-solid fa-xmark';
-            } else {
-                menu.classList.add('hidden');
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
                 icon.className = 'fa-solid fa-bars-staggered';
+            } else {
+                menu.classList.add('open');
+                icon.className = 'fa-solid fa-xmark text-primary-600';
             }
         };
 
@@ -643,15 +674,15 @@
             
             if(isDesktop) {
                 document.querySelectorAll('.nav-item').forEach(nav => {
-                    nav.className = 'nav-item px-4 py-2 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all text-gray-500 font-semibold';
+                    nav.className = 'nav-item px-5 py-2.5 rounded-full hover:bg-gray-100 hover:text-gray-900 transition-all text-gray-500 font-semibold';
                 });
                 if(el && el.classList.contains('nav-item')) {
-                    el.className = 'nav-item px-4 py-2 rounded-full bg-primary-50 text-primary-600 font-semibold transition-all';
+                    el.className = 'nav-item px-5 py-2.5 rounded-full bg-primary-50 text-primary-600 font-semibold transition-all';
                 }
             } else {
                 const mobileLinks = document.querySelectorAll('#mobile-menu a');
-                mobileLinks.forEach(a => a.className = 'block px-4 py-3 rounded-xl hover:bg-gray-50');
-                el.className = 'block px-4 py-3 rounded-xl bg-primary-50 text-primary-600';
+                mobileLinks.forEach(a => a.className = 'block px-4 py-3.5 rounded-2xl hover:bg-gray-50 transition-colors');
+                el.className = 'block px-4 py-3.5 rounded-2xl bg-primary-50 text-primary-600 transition-colors';
             }
 
             document.querySelectorAll('.page-content').forEach(page => page.classList.add('hidden'));
@@ -662,10 +693,9 @@
 
         // --- 7. KIỂM TRA QUYỀN TRƯỚC KHI THI ---
         window.batDauThi = (soDe, btn) => {
-            // Yêu cầu đăng nhập trước
             if (!window.state.user) {
                 openModal('authModal');
-                return; // Chặn không cho thi tiếp
+                return;
             }
 
             const isIconOnly = !btn.innerText.trim();
@@ -686,7 +716,8 @@
                     btn.classList.add('hover:bg-primary-600', 'hover:text-white', 'hover:border-transparent');
                 }
                 
-                alert(`Xin chào ${window.state.user.email}!\nHệ thống đang mở đề thi số ${soDe}. Chúc bạn làm bài tốt!`);
+                const emailOrName = window.state.user.email || window.state.user.displayName || "bạn";
+                alert(`Xin chào ${emailOrName}!\nHệ thống đang mở đề thi số ${soDe}. Chúc bạn làm bài tốt!`);
             }, 800);
         };
 
