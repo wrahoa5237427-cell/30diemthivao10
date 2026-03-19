@@ -1,0 +1,28 @@
+/* 1. Định nghĩa font Regular (Chữ thường) */
+@font-face {
+    font-family: 'SpotifyMix';
+    src: url('fonts/SpotifyMixUI Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* 2. Định nghĩa font Bold (Chữ đậm) */
+@font-face {
+    font-family: 'SpotifyMix';
+    src: url('fonts/SpotifyMixUI Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* 3. Áp dụng lên toàn bộ trang web */
+body {
+    font-family: 'SpotifyFont', sans-serif;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: 'SpotifyFont', sans-serif;
+    font-weight: bold;
+}

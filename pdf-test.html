@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+</head>
+
+<body>
+
+<h2>Nhập văn bản</h2>
+
+<textarea id="editor" rows="10" style="width:100%"></textarea>
+
+<br><br>
+
+<button onclick="submitTest()">Xuất PDF</button>
+
+<div id="pdf-export-container" style="display:none">
+<div id="pdf-actual-content"></div>
+</div>
+
+<script>
+
+function submitTest(){
+
+const editor = document.getElementById("editor")
+
+const text = editor.value
+
+const paragraphs = text.split("\n")
+
+let html=""
+
+paragraphs.forEach(p=>{
+if(p.trim()!=""){
+html += "<p>"+p+"</p>"
+}
+})
+
+document.getElementById("pdf-actual-content").innerHTML = html
+
+const element = document.getElementById("pdf-export-container")
+
+element.style.display="block"
+
+html2pdf().from(element).save("baitap.pdf")
+
+}
+
+</script>
+
+</body>
+</html>

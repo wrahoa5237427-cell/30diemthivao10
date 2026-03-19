@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề Thi Ngữ Văn - Hệ thống EduPro</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class', // Bật chế độ Dark Mode bằng class
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // Đã đổi toàn bộ sang SpotifyMix
+                        sans: ['"SpotifyMix"', 'sans-serif'],
+                        serif: ['"SpotifyMix"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#0f172a',
+                            dark: '#020617'
+                        },
+                        paper: {
+                            light: '#faf9f6',
+                            dark: '#1e293b'
+                        },
+                        ink: {
+                            light: '#1e293b',
+                            dark: '#f8fafc'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 8px 30px rgba(0,0,0,0.04)',
+                        'soft-dark': '0 8px 30px rgba(0,0,0,0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Khai báo font SpotifyMix gốc */
+        @font-face {
+            font-family: 'SpotifyMix';
+            src: url('fonts/SpotifyMixUI Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'SpotifyMix';
+            src: url('fonts/SpotifyMixUI Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        body {
+            font-family: 'SpotifyMix', sans-serif !important;
+            overflow: hidden; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Tinh chỉnh Scrollbar cho Cute hơn */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .tnr-academic {
+            font-family: 'SpotifyMix', sans-serif;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .auto-expand-input {
+            width: 100%;
+            height: 100%;
+            min-height: 250px; 
+            cursor: text;
+            resize: none;
+            overflow-y: auto;
+            outline: none;
+        }
+        .auto-expand-input:empty:before {
+            content: attr(data-placeholder);
+            color: #94a3b8;
+            pointer-events: none;
+            display: block;
+        }
+        
+        .auto-expand-input[contenteditable="false"] {
+            cursor: not-allowed;
+        }
+
+        /* Tooltip style */
+        .tooltip {
+            position: relative;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: max-content;
+            background-color: #334155;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 4px 8px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.75rem;
+            font-weight: normal;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        #pdf-render-area { display: none; }
+        #scratchpad-drawer { box-shadow: -15px 0 30px rgba(0,0,0,0.1); }
+
+        .flagged-btn {
+            background-color: #ffedd5 !important;
+            border-color: #f97316 !important;
+            color: #c2410c !important;
+        }
+        .dark .flagged-btn {
+            background-color: #431407 !important;
+            border-color: #ea580c !important;
+            color: #fdba74 !important;
+        }
+
+        /* Styles cho PDF in ấn - Đổi sạch Arial thành SpotifyMix */
+        @media print {
+            @page { size: A4; margin: 10mm 20mm 10mm 20mm; }
+            body {
+                font-family: 'SpotifyMix', sans-serif !important;
+                overflow: visible !important;
+                background: white !important;
+                color: black !important;
+            }
+            nav, main, #submit-modal, #focus-warning-modal, #highlight-palette, #scratchpad-toggle, #scratchpad-drawer { 
+                display: none !important; 
+            }
+            #pdf-render-area { display: block !important; width: 100%; }
+            table.pdf-layout-table { width: 100%; border-collapse: collapse; border: none; }
+            table.pdf-layout-table th, table.pdf-layout-table td { border: none; padding: 0; }
+            .pdf-header-space { padding: 0; }
+            .pdf-footer-space { padding: 0; }
+            .pdf-main-content { padding: 0; }
+            .pdf-custom-header { text-align: center; border-bottom: 2px solid #1e293b; padding-bottom: 10px; margin-bottom: 15px; }
+            .pdf-custom-header h1 { font-family: 'SpotifyMix', sans-serif; font-size: 16pt; font-weight: bold; margin: 0; }
+            .pdf-custom-header p { font-family: 'SpotifyMix', sans-serif; font-size: 11pt; margin: 5px 0 0 0; color: #475569; }
+            .pdf-custom-footer { text-align: center; font-family: 'SpotifyMix', sans-serif; font-size: 9pt; color: #64748b; padding-top: 10px; border-top: 1px solid #cbd5e1; margin-top: 15px; }
+            .pdf-section-title { font-family: 'SpotifyMix', sans-serif; font-size: 14pt; font-weight: bold; margin: 0 0 15px 0; }
+            .pdf-question-block { margin-bottom: 20px; page-break-inside: avoid; break-inside: avoid; }
+            .pdf-question-text { font-family: 'SpotifyMix', sans-serif; font-size: 12pt; margin-bottom: 8px; text-align: justify; }
+            .pdf-answer-box { font-family: 'SpotifyMix', sans-serif; border-left: 3px solid #3b82f6; padding: 10px 15px; background-color: #f8fafc; border-radius: 4px; font-size: 12.5pt; line-height: 1.6; white-space: pre-wrap; page-break-inside: auto; text-align: justify; }
+            .pdf-reading-text { font-family: 'SpotifyMix', sans-serif; font-size: 12pt; font-style: italic; padding: 15px; border: 1px solid #e2e8f0; background: #fdfdfd; margin-bottom: 20px; text-align: justify; page-break-inside: auto; line-height: 1.6; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 antialiased flex flex-col h-screen relative">
+
+    <!-- Header -->
+    <nav class="bg-brand-light dark:bg-brand-dark text-white h-16 flex-shrink-0 flex items-center justify-between px-6 shadow-md z-10 relative transition-colors">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-blue-500/20 rounded-xl">
+                <i class="ph-fill ph-book-open-text text-2xl text-blue-400"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight tracking-wide font-sans">ĐỀ ÔN TẬP TUYỂN SINH LỚP 10</h1>
+                <p class="text-xs text-slate-400 font-medium font-sans">Môn: Ngữ Văn | Hệ thống EduPro</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            
+            <!-- Trạng thái lưu -->
+            <div id="save-status" class="text-xs text-emerald-400 font-medium flex items-center gap-1 opacity-0 transition-opacity">
+                <i class="ph-bold ph-check-circle"></i> Đã lưu
+            </div>
+
+            <!-- Mode Switcher -->
+            <div class="bg-slate-800 dark:bg-slate-800/50 p-1 rounded-lg flex items-center border border-slate-700">
+                <button onclick="setMode('chill')" id="btn-mode-chill" class="px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400">
+                    <i class="ph-fill ph-leaf"></i> Chill
+                </button>
+                <button onclick="setMode('focus')" id="btn-mode-focus" class="px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-400 hover:text-white">
+                    <i class="ph-fill ph-target"></i> Đi Thi
+                </button>
+            </div>
+
+            <!-- Timer -->
+            <div id="timer-container" class="flex items-center gap-2 bg-slate-800 dark:bg-slate-800/50 px-4 py-1.5 rounded-lg border border-slate-700 transition-colors duration-300 w-[120px] justify-center">
+                <i class="ph ph-infinity text-xl text-emerald-400" id="timer-icon"></i>
+                <span id="timer" class="font-mono text-lg font-bold tracking-wider text-emerald-400 transition-colors duration-300 mt-0.5">Tự do</span>
+            </div>
+            
+            <!-- Dark/Light Mode Toggle -->
+            <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-colors tooltip">
+                <i class="ph-fill ph-moon text-xl text-yellow-300 hidden dark:block" id="icon-sun"></i>
+                <i class="ph-fill ph-sun text-xl text-orange-400 block dark:hidden" id="icon-moon"></i>
+                <span class="tooltip-text">Giao diện</span>
+            </button>
+
+            <button onclick="showSubmitModal()" class="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-xl font-semibold transition-all shadow-[0_0_15px_rgba(37,99,235,0.4)] active:scale-95 font-sans">
+                <i class="ph-bold ph-paper-plane-tilt text-lg"></i>
+                <span>Nộp Bài</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Split Screen Container -->
+    <main id="main-container" class="flex-1 flex overflow-hidden relative">
+        
+        <!-- NÚT & BẢNG GIẤY NHÁP -->
+        <button id="scratchpad-toggle" onclick="toggleScratchpad()" class="fixed right-0 top-1/2 -translate-y-1/2 bg-yellow-400 dark:bg-yellow-500 text-yellow-950 p-2.5 rounded-l-2xl shadow-[-4px_0_15px_rgba(0,0,0,0.15)] hover:bg-yellow-300 transition z-40 flex flex-col items-center gap-2 border border-yellow-500 border-r-0">
+            <i class="ph-bold ph-note-pencil text-2xl"></i>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest font-sans" style="writing-mode: vertical-rl; text-orientation: mixed;">NHÁP</span>
+        </button>
+
+        <div id="scratchpad-drawer" class="fixed right-0 top-16 bottom-16 w-80 sm:w-96 bg-white dark:bg-slate-800 transform translate-x-full transition-transform duration-300 z-50 flex flex-col border-l-4 border-yellow-400 rounded-l-2xl shadow-2xl">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 bg-yellow-50 dark:bg-yellow-900/20 flex justify-between items-center flex-shrink-0 rounded-tl-2xl">
+                <h3 class="font-bold text-yellow-800 dark:text-yellow-400 flex items-center gap-2 font-sans"><i class="ph-fill ph-notebook"></i> GIẤY NHÁP</h3>
+                <button onclick="toggleScratchpad()" class="text-slate-400 hover:text-red-500 transition-colors"><i class="ph-bold ph-x text-xl"></i></button>
+            </div>
+            <textarea id="scratchpad-textarea" class="flex-1 w-full p-5 resize-none outline-none tnr-academic text-slate-700 dark:text-slate-300 bg-[url('https://www.transparenttextures.com/patterns/notebook.png')] bg-yellow-50/20 dark:bg-transparent" placeholder="Viết nháp tự do tại đây...&#10;(Nội dung này không lưu vào file PDF)."></textarea>
+        </div>
+
+        <!-- BẢNG CÔNG CỤ HIGHLIGHT (IELTS STYLE) -->
+        <div id="highlight-palette" class="absolute hidden bg-white dark:bg-slate-800 p-1.5 rounded-full shadow-2xl border border-slate-200 dark:border-slate-700 z-50 transition-all flex items-center gap-1">
+            <button onclick="applyColorHighlight('#fef08a')" class="w-6 h-6 rounded-full bg-yellow-300 hover:scale-110 transition-transform cursor-pointer border border-yellow-400 tooltip"><span class="tooltip-text">Vàng</span></button>
+            <button onclick="applyColorHighlight('#bbf7d0')" class="w-6 h-6 rounded-full bg-green-300 hover:scale-110 transition-transform cursor-pointer border border-green-400 tooltip"><span class="tooltip-text">Xanh lá</span></button>
+            <button onclick="applyColorHighlight('#a5f3fc')" class="w-6 h-6 rounded-full bg-cyan-300 hover:scale-110 transition-transform cursor-pointer border border-cyan-400 tooltip"><span class="tooltip-text">Xanh ngọc</span></button>
+            <button onclick="applyColorHighlight('#fbcfe8')" class="w-6 h-6 rounded-full bg-pink-300 hover:scale-110 transition-transform cursor-pointer border border-pink-400 tooltip"><span class="tooltip-text">Hồng</span></button>
+            <div class="w-px h-5 bg-slate-200 dark:bg-slate-600 mx-1"></div>
+            <button onclick="removeHighlight()" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-red-500 transition-colors tooltip">
+                <i class="ph-bold ph-eraser text-lg"></i><span class="tooltip-text">Xóa Highlight</span>
+            </button>
+        </div>
+
+        <!-- CỘT TRÁI: ĐỀ THI -->
+        <section id="left-pane" class="h-full overflow-y-auto bg-paper-light dark:bg-paper-dark relative selection:bg-blue-200 dark:selection:bg-blue-900 flex-shrink-0 transition-colors" style="width: 50%;">
+            <div class="max-w-3xl mx-auto p-8 sm:p-12 tnr-academic text-ink-light dark:text-ink-dark">
+                
+                <div class="text-center mb-10 pb-6 border-b border-slate-300 dark:border-slate-700">
+                    <h2 class="text-2xl font-bold uppercase tracking-wide">Đề Thi Chính Thức</h2>
+                    <p class="italic text-slate-500 dark:text-slate-400 mt-2">Đọc đề bên trái - Làm bài bên phải</p>
+                </div>
+
+                <!-- PHẦN I -->
+                <div class="mb-2">
+                    <h3 class="text-xl font-bold mb-2 font-sans text-brand-light dark:text-white">I. PHẦN ĐỌC HIỂU (4,0 điểm)</h3>
+                    <p class="mb-2 font-bold italic">Đọc ngữ liệu sau và thực hiện các yêu cầu:</p>
+                    
+                    <div id="reading-passage" class="bg-white dark:bg-slate-800/80 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-8">
+                    <p class="mb-2 indent-8">Người có tính khiêm tốn thường hay tự cho mình là kém, còn phải phấn đấu thêm, trau dồi thêm, cần được trao đổi, học hỏi nhiều thêm nữa. Người có tính khiêm tốn không bao giờ chịu chấp nhận sự thành công của cá nhân mình trong hoàn cảnh hiện tại, lúc nào cũng cho sự thành công của mình là tầm thường, không đáng kể, luôn luôn tìm cách để học hỏi thêm nữa.</p>
+                    <p class="mb-2 indent-8">Tại sao con người lại phải khiêm tốn như thế? Đó là vì cuộc đời là một cuộc đấu tranh bất tận, mà tài nghệ của mỗi cá nhân tuy là quan trọng, nhưng thật ra chỉ là những giọt nước bé nhỏ giữa đại dương bao la. Sự hiểu biết của mỗi cá nhân không thể đem so sánh với mọi người cùng chung sống với mình. Vì thế, dù tài năng đến đâu cũng luôn luôn phải học thêm, học mãi mãi.</p>
+                    <p class="mb-2 indent-8">Tóm lại, con người khiêm tốn là con người hoàn toàn biết mình, hiểu người, không tự mình đề cao vai trò, ca tụng chiến công của cá nhân mình cũng như không bao giờ chấp nhận một ý thức chịu thua mang nhiều mặc cảm tự ti đối với mọi người.</p>
+                    <p class="mb-2 indent-8">Khiêm tốn là một điều không thể thiếu cho những ai muốn thành công trên đường đời.</p>
+                        <div class="text-right mt-6 text-sm text-slate-500 dark:text-slate-400 italic">
+                            (Trích “Tinh hoa xử thế”, Lâm Ngữ Đường, Ngữ văn 7, tập 2, NXB Giáo dục, 2015, tr.70-71)
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <p id="q-text-1"><strong>Câu 1 (0,5 điểm).</strong> Xác định vấn đề chính của ngữ liệu trên?</p>
+                        <p id="q-text-2"><strong>Câu 2 (0,5 điểm).</strong> Trong đoạn văn thứ nhất, người có tính khiêm tốn có biểu hiện như thế nào?</p>
+                        <p id="q-text-3"><strong>Câu 3 (1,0 điểm).</strong> Chỉ ra và nêu tác dụng của biện pháp tu từ liệt kê được sử dụng trong đoạn văn thứ nhất?</p>
+                        <p id="q-text-4"><strong>Câu 4 (1,0 điểm).</strong> Anh/chị hiểu như thế nào về câu nói sau: “Tài nghệ của mỗi cá nhân tuy là rất quan trọng, nhưng thật ra chỉ là những giọt nước nhỏ giữa đại dương bao la”.</p>
+                        <p id="q-text-5"><strong>Câu 5 (1,0 điểm).</strong> Anh/chị có đồng tình với ý kiến: “Dù tài năng đến đâu cũng luôn luôn phải học thêm, học mãi mãi”? Vì sao?</p>
+                    </div>
+                </div>
+
+                <!-- PHẦN II -->
+                <div class="mb-1 mt-8">
+                    <h3 class="text-xl font-bold mb-4 font-sans border-t border-slate-300 dark:border-slate-700 pt-8 text-brand-light dark:text-white">II. PHẦN VIẾT (4,0 điểm)</h3>
+                    
+                    <div class="mb-6">
+                        <p id="q-text-6" class="mb-2 text-justify"><strong>Câu 1 (2,0 điểm).</strong> Từ những thông tin của văn bản ở phần Đọc hiểu, anh/chị hãy viết một đoạn văn nghị luận xã hội (khoảng 400 chữ) bàn về ý kiến “Khiêm tốn là một điều không thể thiếu cho những ai muốn thành công trên đường đời.”</p>
+                    </div>
+
+                    <div>
+                        <p id="q-text-7" class="mb-5 text-justify"><strong>Câu 2 (4,0 điểm).</strong> Em hãy phân tích bài thơ “Hành quân giữa rừng xuân” của Lê Anh Xuân</p>
+                        
+                        <div id="poem-passage" class="bg-white dark:bg-slate-800/80 p-8 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm mb-3">
+                           <h4 class="font-bold text-lg mb-4 uppercase tracking-wider text-center not-italic">HÀNH QUÂN GIỮA RỪNG XUÂN</h4>
+                            <div class="text-center italic leading-[1.8] mb-4">
+                                <p class="mb-4">
+                                    Rừng xa vọng tiếng chim gù,<br>
+                                    Ngân nga tiếng suối, vi vu gió ngàn.<br>
+                                    Mùa xuân đẫm lá ngụy trang,<br>
+                                    Đường ra tiền tuyến nở vàng hoa mai.<br>
+                                    Ba lô nặng, súng cầm tay,<br>
+                                    Đường xa biết mấy dặm dài nhớ thương.<br>
+                                    Giờ này mẹ ở quê hương,<br>
+                                    Cũng chừng đang dõi theo đường ta đi.<br>
+                                    Đêm mưa, ngày nắng sá gì,<br>
+                                    Quân thù còn đó, ta đi chưa về.<br>
+                                    Chim rừng thánh thót bên khe,<br>
+                                    Nhìn lên xanh biếc bốn bề rừng xuân.
+                                </p>
+                                <p class="text-right text-sm text-slate-500 dark:text-slate-400 not-italic">(Trích tuyển tập “Thơ Lê Anh Xuân”, NXB Giáo dục, 1981)</p>
+                            </div>
+
+                            <div class="border-t border-slate-200 dark:border-slate-700 pt-4 text-justify text-sm text-slate-600 dark:text-slate-400" style="text-align: justify;">
+                                <strong>Tri thức ngữ văn về tác giả.</strong><br>
+                                <i>Lê Anh Xuân (1940 - 1968) tên thật là Ca Lê Hiến, sinh ngày 5 tháng 6 năm 1940 tại quê hương Đồng Khởi - Bến Tre. Ông cũng là một chiến sĩ, hy sinh ngày 21 tháng 5 năm 1968 tại ấp Phước Quảng, xã Phước Lợi, huyện Cần Đước, tỉnh Long An trong một trận càn của quân đội Mỹ...</i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- THANH PHÂN CHIA (RESIZER) -->
+        <div id="drag-resizer" class="w-2 bg-slate-200 dark:bg-slate-700 hover:bg-blue-400 dark:hover:bg-blue-500 active:bg-blue-500 cursor-col-resize transition-colors duration-150 flex-shrink-0 z-20 flex flex-col justify-center items-center group relative">
+            <div class="h-12 w-1 bg-slate-400 dark:bg-slate-500 rounded-full group-hover:bg-white transition-colors"></div>
+        </div>
+
+        <!-- CỘT PHẢI: KHU VỰC LÀM BÀI -->
+        <section id="right-pane" class="flex-1 h-full flex flex-col bg-white dark:bg-brand-light relative min-w-[20%] transition-colors">
+            
+            <div class="flex-shrink-0 p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 font-sans transition-colors">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 tracking-wider">Họ và Tên</label>
+                        <input type="text" id="stu-name" placeholder="Nhập họ và tên..." class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm dark:text-white" oninput="triggerSave()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase mb-1.5 tracking-wider">Số Báo Danh</label>
+                        <input type="text" id="stu-id" placeholder="Nhập SBD..." class="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all shadow-sm dark:text-white" oninput="triggerSave()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- RICH TEXT TOOLBAR (TUỲ BIẾN NHƯ WORD) -->
+            <div class="flex-shrink-0 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 py-2 flex items-center gap-2 overflow-x-auto" id="editor-toolbar">
+                <button onclick="formatText('bold')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center font-bold tooltip"><i class="ph-bold ph-text-b text-lg"></i><span class="tooltip-text">In đậm</span></button>
+                <button onclick="formatText('italic')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center italic tooltip"><i class="ph-bold ph-text-italic text-lg"></i><span class="tooltip-text">In nghiêng</span></button>
+                <button onclick="formatText('underline')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center underline tooltip"><i class="ph-bold ph-text-underline text-lg"></i><span class="tooltip-text">Gạch chân</span></button>
+                <div class="w-px h-5 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                <button onclick="formatText('justifyLeft')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center tooltip"><i class="ph-bold ph-text-align-left text-lg"></i><span class="tooltip-text">Căn trái</span></button>
+                <button onclick="formatText('justifyCenter')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center tooltip"><i class="ph-bold ph-text-align-center text-lg"></i><span class="tooltip-text">Căn giữa</span></button>
+                <button onclick="formatText('justifyRight')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center tooltip"><i class="ph-bold ph-text-align-right text-lg"></i><span class="tooltip-text">Căn phải</span></button>
+                <button onclick="formatText('justifyFull')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center tooltip"><i class="ph-bold ph-text-align-justify text-lg"></i><span class="tooltip-text">Căn đều</span></button>
+                <div class="w-px h-5 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                <button onclick="formatText('insertUnorderedList')" class="w-8 h-8 rounded hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center tooltip"><i class="ph-bold ph-list-bullets text-lg"></i><span class="tooltip-text">Danh sách</span></button>
+                <button onclick="formatText('removeFormat')" class="w-8 h-8 rounded text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center justify-center tooltip"><i class="ph-bold ph-eraser text-lg"></i><span class="tooltip-text">Xóa định dạng</span></button>
+            </div>
+
+            <div class="flex-1 p-6 overflow-y-auto bg-white dark:bg-slate-900 flex flex-col" id="question-workspace">
+                
+                <!-- Dùng JS để render tự động Box Câu Hỏi tránh lặp lại HTML dài dòng -->
+                <div id="dynamic-questions-container" class="flex-1 flex flex-col"></div>
+
+            </div>
+
+            <!-- Thanh điều hướng dưới cùng -->
+            <div class="flex-shrink-0 bg-slate-50 dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.02)] font-sans">
+                <button onclick="prevQuestion()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors shadow-sm focus:outline-none">
+                    <i class="ph-bold ph-caret-left text-lg"></i>
+                </button>
+
+                <div class="flex items-center gap-1.5 overflow-x-auto px-2" id="pagination-container">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mr-1">Đọc Hiểu:</div>
+                    <!-- Buttons Rendered by JS -->
+                    <div id="nav-group-1" class="flex gap-1.5"></div>
+                    
+                    <div class="w-px h-6 bg-slate-300 dark:bg-slate-600 mx-2"></div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mr-1">Làm Văn:</div>
+                    <!-- Buttons Rendered by JS -->
+                    <div id="nav-group-2" class="flex gap-1.5"></div>
+                </div>
+
+                <button onclick="nextQuestion()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors shadow-sm focus:outline-none">
+                    <i class="ph-bold ph-caret-right text-lg"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL NHẮC NHỞ FOCUS MODE (THAY THẾ CHEAT COUNT) -->
+    <div id="focus-warning-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[60] hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300 font-sans">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300 relative border-2 border-orange-400 text-center">
+            <div class="w-20 h-20 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-6 text-orange-500 animate-bounce">
+                <i class="ph-fill ph-warning-octagon text-5xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Cảnh Báo Mất Tập Trung!</h2>
+            <p class="text-slate-600 dark:text-slate-300 mb-6 font-medium">Bạn đang ở <strong>Chế độ Đi Thi</strong>. Vui lòng không chuyển sang Tab hoặc Ứng dụng khác trong thời gian làm bài.</p>
+            <button onclick="closeFocusWarning()" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-xl font-bold transition-colors shadow-lg shadow-orange-500/30">
+                Tôi Đã Hiểu, Quay Lại Bài
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL NỘP BÀI -->
+    <div id="submit-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300 font-sans">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300 relative">
+            <div id="modal-icon-container" class="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600 dark:text-blue-400">
+                <i id="modal-icon" class="ph-fill ph-check-circle text-5xl"></i>
+            </div>
+            <h2 id="modal-title" class="text-2xl font-bold text-slate-800 dark:text-white text-center mb-2">Xác nhận Nộp bài</h2>
+            <p id="modal-desc" class="text-slate-500 dark:text-slate-400 text-center mb-8 text-sm">Bạn đã sẵn sàng kết thúc bài làm chưa?</p>
+            <div class="space-y-3">
+                <button onclick="generateProfessionalPDF()" class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold transition-colors shadow-lg shadow-blue-500/30">
+                    <i class="ph-bold ph-printer text-xl"></i> Xuất File PDF / In Bài
+                </button>
+                <button id="btn-resume" onclick="resumeExam()" class="w-full flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 py-3.5 rounded-xl font-semibold transition-colors">
+                    <i class="ph-bold ph-magnifying-glass text-xl"></i> Xem & Sửa lại bài làm
+                </button>
+                <button onclick="retryExam()" class="w-full flex items-center justify-center gap-2 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 py-3.5 rounded-xl font-semibold transition-colors border border-red-200 dark:border-red-800 mt-4">
+                    <i class="ph-bold ph-trash text-xl"></i> Xóa & Làm lại từ đầu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- VÙNG RENDER PDF -->
+    <div id="pdf-render-area"></div>
+
+    <script>
+        // ==========================================
+        // CẤU HÌNH & TRẠNG THÁI
+        // ==========================================
+        const questionsConfig = [
+            { id: 1, part: 1, type: 'short', score: 0.5 },
+            { id: 2, part: 1, type: 'short', score: 0.5 },
+            { id: 3, part: 1, type: 'short', score: 1.0 },
+            { id: 4, part: 1, type: 'short', score: 1.0 },
+            { id: 5, part: 1, type: 'short', score: 1.0 },
+            { id: 6, part: 2, type: 'long', score: 2.0, goal: 400 },
+            { id: 7, part: 2, type: 'long', score: 4.0 }
+        ];
+
+        let currentQuestion = 1;
+        let isExamLocked = false;
+        let examMode = 'chill'; // 'chill' | 'focus'
+        let timeLeft = 120 * 60; // 120 phút (Chỉ xài cho focus)
+        let timerInterval = null;
+        let flaggedStatus = {}; 
+
+        const timerElement = document.getElementById('timer');
+        const timerContainer = document.getElementById('timer-container');
+
+        // ==========================================
+        // RENDER GIAO DIỆN ĐỘNG
+        // ==========================================
+        function initWorkspace() {
+            const container = document.getElementById('dynamic-questions-container');
+            const navGroup1 = document.getElementById('nav-group-1');
+            const navGroup2 = document.getElementById('nav-group-2');
+            
+            let q1Index = 1, q2Index = 1;
+
+            questionsConfig.forEach((q, idx) => {
+                const partTitle = q.part === 1 ? 'Phần I' : 'Phần II';
+                const subIndex = q.part === 1 ? q1Index++ : q2Index++;
+                const isHidden = idx === 0 ? '' : 'hidden';
+                const goalHTML = q.goal ? `<span class="text-xs font-normal text-slate-500 bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded-md mt-1">Mục tiêu: ~${q.goal} chữ</span>` : '';
+                
+                // Render Box Câu Hỏi
+                container.innerHTML += `
+                    <div id="q-box-${q.id}" class="flex-1 flex-col ${idx===0 ? 'flex' : 'hidden'} animate-[fadeIn_0.3s_ease-out]">
+                        <h3 class="text-xl font-bold text-blue-600 dark:text-blue-400 mb-3 font-sans flex justify-between items-center">
+                            <span>${partTitle}. Câu ${subIndex} (${q.score} đ)</span>
+                            ${goalHTML}
+                        </h3>
+                        <div class="flex-1 flex flex-col border border-slate-200 dark:border-slate-700 rounded-2xl p-5 bg-[#fbfcfd] dark:bg-slate-800 shadow-inner focus-within:ring-2 focus-within:ring-blue-400 dark:focus-within:ring-blue-500 focus-within:bg-white dark:focus-within:bg-slate-800 transition-all relative">
+                            <div id="ans-${q.id}" class="auto-expand-input tnr-academic text-ink-light dark:text-ink-dark" contenteditable="true" data-placeholder="${q.type === 'long' ? 'Thụt lề dòng đầu và bắt đầu viết bài văn của bạn tại đây...' : 'Nhập câu trả lời ngắn gọn...'}"></div>
+                            
+                            <div class="flex justify-between items-center mt-3 border-t border-slate-200 dark:border-slate-700 pt-3">
+                                <button onclick="toggleFlag(${q.id})" id="flag-btn-${q.id}" class="text-xs font-bold text-slate-400 hover:text-orange-500 flex items-center gap-1.5 transition-colors"><i class="ph-bold ph-flag text-lg"></i> Cắm cờ xem lại</button>
+                                <div class="text-xs text-slate-400 font-sans font-medium transition-colors flex items-center gap-1" id="word-counter-wrap-${q.id}">
+                                    <i class="ph-fill ph-text-t"></i> <span id="word-count-${q.id}">0</span> chữ
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Render Nav Buttons
+                const btnHTML = `<button id="nav-btn-${q.id}" onclick="goToQuestion(${q.id})" class="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 font-bold text-sm transition-colors shadow-sm relative">${subIndex}</button>`;
+                if(q.part === 1) navGroup1.innerHTML += btnHTML;
+                else navGroup2.innerHTML += btnHTML;
+            });
+
+            // Gắn sự kiện paste, input cho editor
+            document.querySelectorAll('.auto-expand-input').forEach(input => {
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault(); 
+                    const text = (e.originalEvent || e).clipboardData.getData('text/plain');
+                    document.execCommand('insertText', false, text);
+                    this.dispatchEvent(new Event('input'));
+                });
+
+                input.addEventListener('input', function() {
+                    const idNum = parseInt(this.id.split('-')[1]);
+                    const count = countWords(this.innerText);
+                    document.getElementById(`word-count-${idNum}`).textContent = count;
+                    checkWordGoal(idNum, count);
+                    triggerSave();
+                });
+            });
+
+            document.getElementById('scratchpad-textarea').addEventListener('input', triggerSave);
+        }
+
+        // ==========================================
+        // DỮ LIỆU & LƯU TRỮ
+        // ==========================================
+        function loadSavedData() {
+            const savedData = localStorage.getItem('edupro_exam_v2');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                if(data.name) document.getElementById('stu-name').value = data.name;
+                if(data.id) document.getElementById('stu-id').value = data.id;
+                if(data.scratchpad) document.getElementById('scratchpad-textarea').value = data.scratchpad;
+                
+                if(data.examMode) setMode(data.examMode, false); // Load mode ko reset time
+                if(data.examMode === 'focus' && data.timeLeft) timeLeft = data.timeLeft;
+                
+                if(data.flaggedStatus) {
+                    flaggedStatus = data.flaggedStatus;
+                    questionsConfig.forEach(q => { if(flaggedStatus[q.id]) renderFlagUI(q.id); });
+                }
+
+                if(data.answers) {
+                    questionsConfig.forEach(q => {
+                        if(data.answers[q.id]) {
+                            const inputEl = document.getElementById(`ans-${q.id}`);
+                            inputEl.innerHTML = data.answers[q.id]; // Dùng innerHTML để giữ formatting
+                            const count = countWords(inputEl.innerText);
+                            document.getElementById(`word-count-${q.id}`).textContent = count;
+                            checkWordGoal(q.id, count);
+                        }
+                    });
+                }
+            } else {
+                setMode('chill'); // Mặc định chill
+            }
+        }
+
+        function saveData() {
+            if(isExamLocked) return;
+            const data = {
+                name: document.getElementById('stu-name').value,
+                id: document.getElementById('stu-id').value,
+                scratchpad: document.getElementById('scratchpad-textarea').value,
+                answers: {},
+                timeLeft: timeLeft,
+                examMode: examMode,
+                flaggedStatus: flaggedStatus
+            };
+            questionsConfig.forEach(q => {
+                data.answers[q.id] = document.getElementById(`ans-${q.id}`).innerHTML;
+            });
+            localStorage.setItem('edupro_exam_v2', JSON.stringify(data));
+
+            const statusIcon = document.getElementById('save-status');
+            statusIcon.style.opacity = '1';
+            setTimeout(() => { statusIcon.style.opacity = '0'; }, 1500);
+        }
+
+        setInterval(saveData, 3000);
+        function triggerSave() { saveData(); }
+
+        // ==========================================
+        // QUẢN LÝ CHẾ ĐỘ (MODE: CHILL / FOCUS)
+        // ==========================================
+        function setMode(mode, resetTime = true) {
+            examMode = mode;
+            const btnChill = document.getElementById('btn-mode-chill');
+            const btnFocus = document.getElementById('btn-mode-focus');
+            
+            if (mode === 'chill') {
+                // UI cập nhật
+                btnChill.className = "px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400";
+                btnFocus.className = "px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-400 hover:text-white";
+                
+                timerElement.textContent = "Tự do";
+                document.getElementById('timer-icon').className = "ph ph-infinity text-xl text-emerald-400";
+                timerContainer.classList.remove('border-red-500', 'animate-pulse');
+                timerElement.classList.remove('text-red-400');
+                
+                if(timerInterval) clearInterval(timerInterval);
+                
+            } else if (mode === 'focus') {
+                // UI cập nhật
+                btnFocus.className = "px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 bg-blue-500/20 text-blue-400";
+                btnChill.className = "px-3 py-1.5 rounded-md text-sm font-semibold transition-all flex items-center gap-1.5 text-slate-400 hover:text-white";
+                
+                document.getElementById('timer-icon').className = "ph ph-clock text-xl text-blue-400";
+                
+                if (resetTime) timeLeft = 120 * 60;
+                startTimer();
+            }
+            triggerSave();
+        }
+
+        // ==========================================
+        // HỆ THỐNG GIÁM SÁT (CHỈ ÁP DỤNG FOCUS MODE)
+        // ==========================================
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && !isExamLocked && examMode === 'focus' && timeLeft > 0) {
+                showFocusWarning();
+            }
+        });
+
+        function showFocusWarning() {
+            const modal = document.getElementById('focus-warning-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modal.firstElementChild.classList.remove('scale-95'); }, 10);
+        }
+
+        function closeFocusWarning() {
+            const modal = document.getElementById('focus-warning-modal');
+            modal.classList.add('opacity-0'); modal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        // ==========================================
+        // DARK/LIGHT THEME TOGGLE
+        // ==========================================
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        // Load theme lúc đầu
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // ==========================================
+        // RICH TEXT & HIGHLIGHTING
+        // ==========================================
+        function formatText(command, value = null) {
+            document.execCommand(command, false, value);
+            // Kích hoạt event input để đếm chữ
+            const activeEditor = document.querySelector('.auto-expand-input:focus');
+            if(activeEditor) activeEditor.dispatchEvent(new Event('input'));
+        }
+
+        const highlightPalette = document.getElementById('highlight-palette');
+        document.addEventListener('selectionchange', () => {
+            const selection = window.getSelection();
+            if (selection.toString().trim().length > 0 && selection.rangeCount > 0) {
+                let node = selection.anchorNode;
+                let isInsideLeftPane = false;
+                while (node) {
+                    if (node.id === 'left-pane') { isInsideLeftPane = true; break; }
+                    node = node.parentNode;
+                }
+
+                if (isInsideLeftPane) {
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    highlightPalette.style.top = `${rect.top - 50}px`;
+                    highlightPalette.style.left = `${rect.left + (rect.width/2) - 80}px`;
+                    highlightPalette.classList.remove('hidden');
+                    return;
+                }
+            }
+            highlightPalette.classList.add('hidden');
+        });
+
+        function applyColorHighlight(color) {
+            document.designMode = "on";
+            document.execCommand("hiliteColor", false, color);
+            document.designMode = "off";
+            window.getSelection().removeAllRanges();
+            highlightPalette.classList.add('hidden');
+        }
+
+        function removeHighlight() {
+            document.designMode = "on";
+            // Set inherit background to remove highlight in spans
+            document.execCommand("backColor", false, "inherit"); 
+            document.designMode = "off";
+            window.getSelection().removeAllRanges();
+            highlightPalette.classList.add('hidden');
+        }
+
+        // ==========================================
+        // CÁC HÀM TIỆN ÍCH KHÁC (Đếm chữ, Cờ, Resize, Tab)
+        // ==========================================
+        function countWords(str) {
+            const cleanStr = str.trim().replace(/\s+/g, ' ');
+            return cleanStr === '' ? 0 : cleanStr.split(' ').length;
+        }
+
+        function checkWordGoal(id, count) {
+            const config = questionsConfig.find(q => q.id === id);
+            if (config && config.goal) {
+                const wrap = document.getElementById(`word-counter-wrap-${id}`);
+                if (count >= config.goal) {
+                    wrap.classList.add('text-emerald-600', 'font-bold');
+                    wrap.classList.remove('text-slate-400', 'font-medium');
+                } else {
+                    wrap.classList.remove('text-emerald-600', 'font-bold');
+                    wrap.classList.add('text-slate-400', 'font-medium');
+                }
+            }
+        }
+
+        function toggleFlag(index) {
+            flaggedStatus[index] = !flaggedStatus[index];
+            renderFlagUI(index);
+            triggerSave();
+        }
+
+        function renderFlagUI(index) {
+            const navBtn = document.getElementById(`nav-btn-${index}`);
+            const flagBtn = document.getElementById(`flag-btn-${index}`);
+            if(flaggedStatus[index]) {
+                navBtn.classList.add('flagged-btn');
+                navBtn.innerHTML = `${navBtn.innerText} <i class="ph-fill ph-flag absolute -top-1.5 -right-1.5 text-orange-500 text-xs bg-white dark:bg-slate-800 rounded-full"></i>`;
+                flagBtn.classList.add('text-orange-500');
+                flagBtn.classList.remove('text-slate-400');
+            } else {
+                navBtn.classList.remove('flagged-btn');
+                navBtn.innerHTML = navBtn.innerText.replace(/<[^>]*>?/gm, ''); // Xóa icon
+                flagBtn.classList.remove('text-orange-500');
+                flagBtn.classList.add('text-slate-400');
+            }
+        }
+
+        function goToQuestion(index) {
+            if(index < 1 || index > questionsConfig.length) return;
+            questionsConfig.forEach(q => {
+                const box = document.getElementById(`q-box-${q.id}`);
+                box.classList.add('hidden'); box.classList.remove('flex');
+                
+                const btn = document.getElementById(`nav-btn-${q.id}`);
+                if(flaggedStatus[q.id]) {
+                    btn.className = "w-9 h-9 flex items-center justify-center rounded-lg border flagged-btn font-bold text-sm transition-colors shadow-sm relative";
+                } else {
+                    btn.className = "w-9 h-9 flex items-center justify-center rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 font-bold text-sm transition-colors shadow-sm relative";
+                }
+            });
+            
+            document.getElementById(`q-box-${index}`).classList.remove('hidden');
+            document.getElementById(`q-box-${index}`).classList.add('flex');
+            document.getElementById(`nav-btn-${index}`).className = "w-9 h-9 flex items-center justify-center rounded-lg border border-blue-600 bg-blue-600 text-white font-bold text-sm transition-colors shadow-sm relative";
+            currentQuestion = index;
+            
+            if(!isExamLocked) setTimeout(() => { document.getElementById(`ans-${index}`).focus(); }, 50);
+        }
+
+        function nextQuestion() { if (currentQuestion < questionsConfig.length) goToQuestion(currentQuestion + 1); }
+        function prevQuestion() { if (currentQuestion > 1) goToQuestion(currentQuestion - 1); }
+
+        // Nháp
+        const scratchpadDrawer = document.getElementById('scratchpad-drawer');
+        let isScratchpadOpen = false;
+        function toggleScratchpad() {
+            isScratchpadOpen = !isScratchpadOpen;
+            if (isScratchpadOpen) scratchpadDrawer.classList.remove('translate-x-full');
+            else scratchpadDrawer.classList.add('translate-x-full');
+        }
+
+        // Resizer
+        const resizer = document.getElementById('drag-resizer');
+        const leftPaneElement = document.getElementById('left-pane');
+        const mainContainer = document.getElementById('main-container');
+        let isResizing = false;
+        function startResize(e) { isResizing = true; document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none'; }
+        function doResize(e) {
+            if (!isResizing) return;
+            let clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+            const containerRect = mainContainer.getBoundingClientRect();
+            let newWidthPercentage = ((clientX - containerRect.left) / containerRect.width) * 100;
+            if (newWidthPercentage < 20) newWidthPercentage = 20;
+            if (newWidthPercentage > 80) newWidthPercentage = 80;
+            leftPaneElement.style.width = `${newWidthPercentage}%`;
+        }
+        function stopResize(e) { if (isResizing) { isResizing = false; document.body.style.cursor = ''; document.body.style.userSelect = ''; } }
+        resizer.addEventListener('mousedown', startResize); document.addEventListener('mousemove', doResize); document.addEventListener('mouseup', stopResize);
+
+        // ==========================================
+        // ĐỒNG HỒ & KHÓA BÀI (CHỈ FOCUS)
+        // ==========================================
+        function updateTimerDisplay() {
+            if (examMode !== 'focus') return;
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            timerElement.textContent = `${m}:${s}`;
+
+            if(timeLeft > 0 && timeLeft <= 300) {
+                timerContainer.classList.add('border-red-500', 'animate-pulse');
+                timerElement.classList.add('text-red-400');
+                timerElement.classList.remove('text-emerald-400');
+                document.getElementById('timer-icon').classList.replace('text-blue-400', 'text-red-400');
+            } else {
+                timerContainer.classList.remove('border-red-500', 'animate-pulse');
+                timerElement.classList.remove('text-red-400');
+                document.getElementById('timer-icon').className = "ph ph-clock text-xl text-blue-400";
+            }
+        }
+
+        function lockExam() {
+            isExamLocked = true;
+            document.querySelectorAll('.auto-expand-input').forEach(el => {
+                el.setAttribute('contenteditable', 'false');
+                el.classList.add('bg-slate-50', 'dark:bg-slate-800'); 
+            });
+            document.getElementById('editor-toolbar').classList.add('opacity-50', 'pointer-events-none');
+            
+            ['stu-name', 'stu-id', 'scratchpad-textarea'].forEach(id => {
+                const el = document.getElementById(id);
+                el.disabled = true; el.readOnly = true;
+                el.classList.add('bg-slate-50', 'dark:bg-slate-800', 'cursor-not-allowed');
+            });
+            
+            document.getElementById('modal-title').textContent = "Hết Thời Gian Làm Bài!";
+            document.getElementById('modal-title').classList.add('text-red-600');
+            document.getElementById('modal-desc').textContent = "Bài làm của bạn đã bị khóa. Vui lòng xuất file PDF để xem/nộp bài.";
+            document.getElementById('btn-resume').innerHTML = `<i class="ph-bold ph-eye text-xl"></i> Xem lại bài (Chỉ xem)`;
+            
+            document.getElementById('modal-icon-container').className = "w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6 text-red-600";
+            document.getElementById('modal-icon').className = "ph-fill ph-clock-countdown text-5xl";
+            saveData();
+        }
+
+        function startTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                if (examMode !== 'focus' || document.getElementById('submit-modal').classList.contains('hidden') === false) return;
+                
+                if(timeLeft <= 0) { 
+                    clearInterval(timerInterval); 
+                    timerElement.textContent = "HẾT GIỜ"; 
+                    timerContainer.classList.remove('animate-pulse');
+                    lockExam();
+                    showSubmitModal(); 
+                    return; 
+                }
+                timeLeft--; 
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        // ==========================================
+        // QUẢN LÝ NỘP BÀI / XÓA BÀI
+        // ==========================================
+        function showSubmitModal() {
+            const modal = document.getElementById('submit-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); modal.firstElementChild.classList.remove('scale-95'); }, 10);
+        }
+
+        function resumeExam() {
+            const modal = document.getElementById('submit-modal');
+            modal.classList.add('opacity-0'); modal.firstElementChild.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
+
+        function retryExam() {
+            if(confirm("CẢNH BÁO: Toàn bộ bài làm của bạn sẽ bị xóa sạch để làm lại từ đầu. Bạn có chắc chắn?")) {
+                localStorage.removeItem('edupro_exam_v2'); 
+                location.reload(); // Cách sạch nhất để reset toàn bộ State & UI
+            }
+        }
+
+        // ==========================================
+        // XUẤT PDF (SẠCH SẼ, CHUYÊN NGHIỆP)
+        // ==========================================
+        function getAnswerTextForPDF(id) {
+            const container = document.getElementById(`q-box-${id}`);
+            const el = document.getElementById(`ans-${id}`);
+            const wasHidden = container.classList.contains('hidden');
+            
+            if (wasHidden) {
+                container.classList.remove('hidden'); container.style.position = 'absolute'; container.style.opacity = '0'; container.classList.add('flex');
+            }
+            // Lấy HTML để giữ Rich Text thay vì innerText
+            const text = el.innerHTML.trim();
+            if (wasHidden) {
+                container.classList.add('hidden'); container.style.position = ''; container.style.opacity = ''; container.classList.remove('flex');
+            }
+            return text && text !== '<br>' ? text : '<i>(Thí sinh không trả lời câu hỏi này)</i>';
+        }
+
+        function generateProfessionalPDF() {
+            if(isScratchpadOpen) toggleScratchpad();
+            saveData();
+
+            const name = document.getElementById('stu-name').value || "....................................";
+            const sbd = document.getElementById('stu-id').value || "..................";
+            
+            const readingHtml = document.getElementById('reading-passage').innerHTML;
+            const poemHtml = document.getElementById('poem-passage').innerHTML;
+            const renderArea = document.getElementById('pdf-render-area');
+            
+            renderArea.innerHTML = `
+                <table class="pdf-layout-table">
+                    <thead>
+                        <tr><td><div class="pdf-header-space"><div class="pdf-custom-header">
+                            <h1>BÀI THI MÔN NGỮ VĂN - THPT QUỐC GIA 2026</h1>
+                            <p>Họ và tên thí sinh: <strong>${name}</strong> &nbsp; | &nbsp; Số báo danh: <strong>${sbd}</strong></p>
+                        </div></div></td></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><div class="pdf-main-content">
+                            <div class="pdf-section-title">I. PHẦN ĐỌC HIỂU (6.0 điểm)</div>
+                            <div class="pdf-reading-text">${readingHtml}</div>
+                            ${[1, 2, 3, 4, 5].map(i => `
+                                <div class="pdf-question-block">
+                                    <div class="pdf-question-text">${document.getElementById(`q-text-${i}`).innerHTML}</div>
+                                    <div class="pdf-answer-box">${getAnswerTextForPDF(i)}</div>
+                                </div>
+                            `).join('')}
+                            <div class="pdf-section-title">II. PHẦN VIẾT (4.0 điểm)</div>
+                            <div class="pdf-question-block">
+                                <div class="pdf-question-text">${document.getElementById('q-text-6').innerHTML}</div>
+                                <div class="pdf-answer-box">${getAnswerTextForPDF(6)}</div>
+                            </div>
+                            <div class="pdf-question-block">
+                                <div class="pdf-question-text">${document.getElementById('q-text-7').innerHTML}</div>
+                                <div class="pdf-reading-text" style="display: block; margin: 0 auto;">${poemHtml}</div>
+                                <div class="pdf-answer-box">${getAnswerTextForPDF(7)}</div>
+                            </div>
+                        </div></td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr><td><div class="pdf-footer-space"><div class="pdf-custom-footer">
+                            Hệ thống đánh giá năng lực EduPro - Bài làm được xuất tự động
+                        </div></div></td></tr>
+                    </tfoot>
+                </table>
+            `;
+
+            const originalTitle = document.title;
+            const safeSBD = sbd.replace(/[^a-zA-Z0-9]/g, '_') || 'ChuaCoSBD';
+            document.title = `Bai_Thi_Ngu_Van_${safeSBD}`;
+            window.print();
+            document.title = originalTitle;
+        }
+
+        // Init lúc đầu
+        document.addEventListener('DOMContentLoaded', () => {
+            initWorkspace();
+            loadSavedData();
+            goToQuestion(1);
+        });
+
+    </script>
+</body>
+</html>

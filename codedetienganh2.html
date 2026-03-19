@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỳ Thi Thử Vào Lớp 10 - Môn Tiếng Anh (Mã đề 314) - 50 câu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .radio-custom:checked + label {
+            background-color: #ebf5ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .radio-custom:checked + label .circle {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        .correct-answer label {
+            background-color: #f0fdf4 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+        .correct-answer label .circle {
+            background-color: #22c55e !important;
+            border-color: #22c55e !important;
+            color: white !important;
+        }
+        .wrong-answer label {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+        .wrong-answer label .circle {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+        .pallete-btn.answered { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .pallete-btn.correct { background-color: #22c55e; color: white; border-color: #22c55e; }
+        .pallete-btn.wrong { background-color: #ef4444; color: white; border-color: #ef4444; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+        .sign-box { border: 2px solid #000; padding: 10px; text-align: center; max-width: 250px; margin: 10px 0; background: #fff; box-shadow: 2px 2px 0px rgba(0,0,0,0.2);}
+        :fullscreen body { background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- START OVERLAY -->
+    <div id="start-overlay" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-80 backdrop-blur-md flex items-center justify-center transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-11/12 text-center transform scale-100 transition-transform">
+            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+                <i class="fa-solid fa-file-signature text-4xl text-blue-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Kỳ Thi Thử Lớp 10</h2>
+            <p class="text-gray-600 font-medium mb-1">Môn: Tiếng Anh (Mã đề 314)</p>
+            <p class="text-gray-500 text-sm mb-6">Số lượng: 50 câu trắc nghiệm<br>Thời gian: 60 phút</p>
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm rounded-xl p-4 mb-6 text-left">
+                <p class="font-bold flex items-center gap-2 mb-2"><i class="fa-solid fa-triangle-exclamation text-yellow-600"></i> Lưu ý quan trọng:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Thời gian làm bài sẽ bắt đầu đếm ngược ngay khi bạn bấm nút khởi tạo.</li>
+                    <li>Đề thi sẽ bị khóa nếu thời gian kết thúc.</li>
+                    <li class="font-medium text-red-500">Vui lòng KHÔNG tải lại trang (F5) trong lúc làm bài để tránh bị mất dữ liệu.</li>
+                </ul>
+            </div>
+            <button onclick="startTest()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg flex justify-center items-center gap-2">
+                BẮT ĐẦU LÀM BÀI <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b z-10 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-blue-600 text-2xl"></i>
+                <div>
+                    <h1 class="font-bold text-gray-800 hidden sm:block">Kỳ Thi Thử Tuyển sinh vào THPT - Môn Tiếng Anh - Trường THPT Chuyên (Mã đề 314)</h1>
+                    <h1 class="font-bold text-gray-800 sm:hidden">Thi Thử Tiếng Anh 10</h1>
+                    <p class="text-xs text-gray-500">Thời gian làm bài: 60 phút</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="toggleFullScreen()" id="fs-btn" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors" title="Toàn màn hình">
+                    <i class="fa-solid fa-expand text-lg" id="fs-icon"></i>
+                </button>
+                <div id="timer" class="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 sm:px-4 py-2 rounded-lg font-mono font-bold text-base sm:text-lg border border-blue-200 shadow-sm opacity-50" title="Đồng hồ sẽ chạy khi bạn bấm bắt đầu">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="time-display">60:00</span>
+                </div>
+                <button onclick="confirmSubmit()" id="header-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-colors shadow-sm hidden md:block opacity-50 cursor-not-allowed" disabled>
+                    Nộp bài
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto w-full flex flex-col md:flex-row overflow-hidden relative">
+        <!-- Left: Questions Area -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 pb-32 md:pb-6 scroll-smooth" id="questions-container"></div>
+
+        <!-- Right: Pallete Area -->
+        <div class="w-full md:w-80 bg-white border-l shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none p-4 flex flex-col absolute bottom-0 md:relative z-20 md:h-full max-h-[40vh] md:max-h-full">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-gray-800">Danh sách câu hỏi</h2>
+                <span id="progress-text" class="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">0/50</span>
+            </div>
+            <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-5 gap-2 overflow-y-auto pr-1 pb-4 flex-1" id="pallete-container"></div>
+            <button onclick="confirmSubmit()" id="mobile-submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors shadow-sm mt-2 md:hidden opacity-50 cursor-not-allowed" disabled>
+                Nộp bài ngay
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal Results -->
+    <div id="result-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-md p-6 transform scale-95 transition-transform duration-300" id="result-content">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-trophy text-4xl text-blue-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Kết quả bài thi</h2>
+                <p class="text-gray-500 mb-6">Bạn đã hoàn thành bài thi thử Tiếng Anh!</p>
+                <div class="bg-gray-50 rounded-xl p-4 mb-6 grid grid-cols-2 gap-4 border">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 font-medium">Số câu đúng</p>
+                        <p class="text-3xl font-bold text-green-500"><span id="correct-count">0</span><span class="text-lg text-gray-400">/50</span></p>
+                    </div>
+                    <div class="text-center border-l">
+                        <p class="text-sm text-gray-500 font-medium">Điểm số (Hệ 10)</p>
+                        <p class="text-3xl font-bold text-blue-600" id="final-score">0.0</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="closeModalAndReview()" class="flex-1 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold py-2.5 rounded-xl transition-all">
+                        Xem chi tiết
+                    </button>
+                    <button onclick="location.reload()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-md">
+                        Làm lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-xl shadow-xl w-11/12 max-w-sm p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Xác nhận nộp bài</h3>
+            <p class="text-gray-600 mb-5 text-sm" id="confirm-msg">Bạn vẫn còn câu hỏi chưa làm. Bạn có chắc chắn muốn nộp bài ngay bây giờ?</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors">Hủy</button>
+                <button onclick="submitTest()" class="px-4 py-2 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">Đồng ý nộp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 50 CÂU HỎI (MÃ ĐỀ 314) ---
+        const questionsData = [
+            // ========== PHẦN 1: MULTIPLE CHOICE (1-7) ==========
+            { id: 1, text: "Question 1. A large number of visitors ______ attracted to this National Park over the past few years.", options: ["A. are being", "B. are", "C. have been", "D. will be"], correct: 2 },
+            { id: 2, text: "Question 2. There is no ______ explanation for what happened.", options: ["A. science", "B. scientific", "C. scientifically", "D. scientist"], correct: 1 },
+            { id: 3, text: "Question 3. I've lost ______ how many times she's been late for work this month.", options: ["A. my mind of", "B. my head of", "C. my marbles of", "D. count of"], correct: 3 },
+            { id: 4, text: "Question 4. Human beings can have ______ issues, ______ is why it's hard for some people to maintain many friendships.", options: ["A. there", "B. which", "C. what", "D. that"], correct: 1 },
+            { id: 5, text: "Question 5. The government has spent £1 million on an advertising ______ to encourage energy conservation.", options: ["A. operation", "B. promotion", "C. campaign", "D. competition"], correct: 2 },
+            { id: 6, text: "Question 6. The painting was a valuable family possession, which had been ______ from generation to generation.", options: ["A. handed across", "B. handed out", "C. handed down", "D. handed over"], correct: 2 },
+            { id: 7, text: "Question 7. I ______ my job applications to many companies. Finally, I ______ as a software programmer in Western Bank.", options: ["A. had submitted - was recruited", "B. submitted - had recruited", "C. submitted - recruited", "D. has submitted - was recruited"], correct: 0 },
+
+            // ========== TRỌNG ÂM (8-9) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress (8-9)</h3></div>` },
+            { id: 8, text: "Question 8.", options: ["A. integrate", "B. encourage", "C. tradition", "D. achievement"], correct: 0 },
+            { id: 9, text: "Question 9.", options: ["A. anthem", "B. appear", "C. allow", "D. attend"], correct: 0 },
+
+            // ========== TRÁI NGHĨA (10-11) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word(s) OPPOSITE in meaning (10-11)</h3></div>` },
+            { id: 10, text: "Question 10. The number of young people finding a part-time job in big cities has fluctuated over the past five years.", options: ["A. increased", "B. levelled out", "C. decreased", "D. slowed down"], correct: 1 },
+            { id: 11, text: "Question 11. If Jeff Bezos and his wife split their properties equally, Ms. Mackenzie could become the richest woman in the world overnight.", options: ["A. oddly", "B. unevenly", "C. unwisely", "D. fairly"], correct: 1 },
+
+            // ========== PHÁT ÂM (12-13) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation (12-13)</h3></div>` },
+            { id: 12, text: "Question 12.", options: ["A. housework", "B. hardware", "C. honor", "D. handmade"], correct: 2 },
+            { id: 13, text: "Question 13.", options: ["A. pumped", "B. laughed", "C. celebrated", "D. fixed"], correct: 2 },
+
+            // ========== GẦN NGHĨA (14-15) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word(s) CLOSEST in meaning (14-15)</h3></div>` },
+            { id: 14, text: "Question 14. They provide care and support for disadvantaged children, helping them get over difficulties.", options: ["A. accept", "B. overcome", "C. face", "D. take"], correct: 1 },
+            { id: 15, text: "Question 15. For environmental safety, we need to find ways to reduce emission of fumes and smoke factories.", options: ["A. leak", "B. release", "C. pollutant", "D. poison"], correct: 1 },
+
+            // ========== BIỂN BÁO / TIN NHẮN (16-18) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Choose the correct answer to each of the following signs/messages (16-18)</h3></div>` },
+            { id: 16, text: `Question 16. What does this message say?
+                <div class="sign-box p-3 bg-gray-50 italic">Dear Alex,<br>Given the current workload, we regret to inform you that your request cannot be accommodated at this time. We will review the situation next month.<br>Management</div>`,
+                options: ["A. Management has approved the request.", "B. The workload will decrease next month.", "C. Alex’s request has been permanently rejected.", "D. The request is postponed and may be reconsidered later."], correct: 3 },
+            { id: 17, text: `Question 17. What does this sign say?
+                <div class="sign-box bg-gray-100 font-bold">Staff Announcement<br>Due to scheduled maintenance, access to the building will be restricted after 6 p.m.</div>`,
+                options: ["A. Only staff can enter the building after 6 p.m.", "B. The building will close completely at 6 p.m.", "C. Maintenance will begin at 6 p.m. and finish the same day.", "D. Entry may be limited after 6 p.m. because of maintenance."], correct: 3 },
+            { id: 18, text: `Question 18. What does this message say?
+                <div class="sign-box p-3 bg-gray-50 italic">Hi Michael,<br>I’ve gone through your proposal and have a few concerns that we should probably discuss before taking this any further.<br>Karen</div>`,
+                options: ["A. Karen has approved the proposal without changes.", "B. Karen is no longer interested in the proposal.", "C. Karen wants to reject the proposal immediately.", "D. Karen suggests discussing issues before proceeding."], correct: 3 },
+
+            // ========== DỰNG CÂU (19-22) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Choose the best sentence made from the given cues (19-22)</h3></div>` },
+            { id: 19, text: "Question 19. laws/ must / pass / help / protect / environment.", options: ["A. Some laws must pass to help protect our environment.", "B. Some laws must be passed to help protect our environment.", "C. Some laws must be pass to help protect our environment.", "D. Some laws must passed to help protect our environment."], correct: 1 },
+            { id: 20, text: "Question 20. How many /you /spend /read /newspapers /every day?", options: ["A. How many hours do you spend to read newspapers every day?", "B. How many hours do you spend reading newspapers every day?", "C. How many hours do you spend to be read newspapers every day?", "D. How many hours you spend on reading newspapers every day?"], correct: 1 },
+            { id: 21, text: "Question 21. He /use /be /the best /our /national /football /team.", options: ["A. He was used being the best footballer of our national football team.", "B. He used to be the best footballer of our national football team.", "C. He used to being the best footballer of our national football team.", "D. He uses to be the best footballer of our national football team."], correct: 1 },
+            { id: 22, text: "Question 22. Although /fire /spread /quick /everybody /able /escape.", options: ["A. Although the fire spread quickly, everybody were able to escape.", "B. Although the fire spread quickly, but everybody was able to escape.", "C. Although the fire spread quickly, everybody was able to escape.", "D. Although the fire spread quickly, then everybody were able to escape."], correct: 2 },
+
+            // ========== ĐỌC HIỂU COACHELLA (23-29) ==========
+            { groupHtml: `<div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8"><h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the text and answer (23-29) – Coachella</h3>
+                <p class="text-gray-700 leading-relaxed text-justify">Coachella is an annual music and arts festival held in the Coachella Valley of Southern California, United States. The festival was first held in 1999 and has since become one of the largest and most popular music festivals in the world. It is known for its diverse lineup of music genres, art installations, and celebrity sightings. It is one of the largest, most famous, and most profitable music festivals in the United States and the world. Most popular music magazines like rock music publish the details of the festival a few months before the date. So, this makes it easy for people to buy the tickets on time and know important event details.<br><br>
+                Coachella’s lineup typically features a mix of established and up-and-coming artists from a variety of genres, including rock, hip-hop, electronic dance music, and alternative. The festival also features art installations, interactive experiences, and a range of food and beverage options.<br><br>
+                In addition to the music and arts, Coachella has become known for its fashion, with attendees often wearing bohemian-inspired outfits and accessories. The festival has also faced criticism for issues such as overcrowding, high ticket prices, and the environmental impact of hosting such a large event in the desert.</p></div>` },
+            { id: 23, text: "Question 23. Coachella is a music and arts festival organized annually in Northern California, United States.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 1 },
+            { id: 24, text: "Question 24. Coachella has become one of the largest and most preferred music festivals in the world.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 2 },
+            { id: 25, text: "Question 25. Coachella offers on-site camping for a complete festival experience.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 0 },
+            { id: 26, text: "Question 26. Most famous music magazines publish details about Coachella right before the festival’s date.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 1 },
+            { id: 27, text: "Question 27. Attendees at Coachella often wear bohemian-inspired outfits and accessories to the festival.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 2 },
+            { id: 28, text: "Question 28. The festival has never received some criticism.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 1 },
+            { id: 29, text: "Question 29. The environmental impact of organizing Coachella in the desert has not been a concern.", options: ["A. Doesn’t say", "B. Wrong", "C. Right"], correct: 1 },
+
+            // ========== ĐỌC HIỂU OPEN-AIR THEATRE (30-34) ==========
+            { groupHtml: `<div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8"><h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the text and answer (30-34) – Open-air theatre</h3>
+                <p class="text-gray-700 leading-relaxed text-justify">Open-air theatre In Britain, the ancient tradition of open-air performances is still alive and well. Cornwall has some of Britain’s oldest working theatres, with one open-air theatre actually built into a cliff, a project only recently completed. Two actors, Dave James and Muriel Thomas, came from London theatres to join a theatre company called Coastline. They now regularly perform in just such a theatre, by the sea. “One thing about performing outside is we never know what’ll happen. For example, if a bird lands on stage, we can’t act as if it’s not there - the audience are all watching it. So we just bring the bird into the play, too. Once, about 30 dolphins came past, jumping out of the water and showing off. The audience were all chatting about them instead of watching the play, so the actors just gave up for a while and watched the dolphins, too.” The weather can also be difficult. “Sometimes it’s been so bad”, says Muriel, “that we’ve asked the audience if they really want to stay. But usually they sit with their coats and umbrellas and say, ‘Yes, please carry on!’” They must feel it isn’t much fun, but no one’s returned their ticket so far! Coastline’s director John Barnack, works hard to introduce people to theatre. “Many people think of theatres as clubs where they don’t belong and are not welcome,” he explains. “Sitting in the open air changes that feeling. The audience are far more involved - they aren’t sitting in the dark, at a distance like in normal theatre, and that improves the actors’ performances, too. I’m very proud of the work they’ve done so far.”</p></div>` },
+            { id: 30, text: "Question 30. What is the writer trying to do in the text?", options: ["A. follow the development of open-air theatre in Britain", "B. explain what it’s like to work in an open-air theatre", "C. warn readers about the disadvantages of attending open-air performances", "D. describe how one open-air theatre was built"], correct: 1 },
+            { id: 31, text: "Question 31. When plays are disturbed by local wildlife, the actors ______.", options: ["A. stop and have a chat with the audience", "B. carry on as though nothing had happened", "C. change their performance to include it", "D. cancel the rest of the performance"], correct: 2 },
+            { id: 32, text: "Question 32. What is the audience’s attitude to bad weather during performances?", options: ["A. They accept it as they have come well-prepared.", "B. They say that it stops them enjoying the play.", "C. They feel they should have their money back.", "D. They worry about the actors getting wet."], correct: 0 },
+            { id: 33, text: "Question 33. What does John Barnack say about outdoor theatre?", options: ["A. He’s worried that it creates an atmosphere similar to a club.", "B. He welcomes the distance it creates between actors and audience.", "C. He’s afraid the atmosphere is more stressful for actors.", "D. He’s happy that the audience feel comfortable being there."], correct: 3 },
+            { id: 34, text: "Question 34. What would an actor from the Coastline company write in his or her diary?", options: ["A. A difficult performance today - it was pouring with rain. Luckily the audience couldn’t see my face in the dark.", "B. I’m glad I moved from the London theatre scene. But I don’t think our director is satisfied with what we’ve done so far...", "C. The theatre looks so old it’s hard to imagine they’ve just finished it. I’d prefer to be by the sea while I’m performing though...", "D. I’m keeping a tradition going, and it tests my acting skills, as I never know what unexpected things I’ll have to deal with..."], correct: 3 },
+
+            // ========== CÂU ĐỒNG NGHĨA (35-38) ==========
+            { groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Choose the sentence that is closest in meaning (35-38)</h3></div>` },
+            { id: 35, text: "Question 35. He survived the operation thanks to skillful surgery.", options: ["A. He survived because he was a skillful surgeon.", "B. Without skillful surgery, he wouldn’t have survived the operation.", "C. There was no skillful surgery, so he died.", "D. In spite of the surgery, he didn’t survive."], correct: 1 },
+            { id: 36, text: "Question 36. An electronic brain refers to a large computing machine depending primarily on electronic devices for its operation.", options: ["A. An electronic brain depends on a large computing machine for its operations with electronic devices.", "B. A large computing machine depending primarily on electronic devices for its operation is known as an electronic brain.", "C. Depending on electronic devices primarily for its operations is a large computing machine as an electronic brain.", "D. A large computing machine depends on an electronic brain for its operations with electronic devices."], correct: 1 },
+            { id: 37, text: "Question 37. No sooner had I turned on my new PC than there was a strange noise.", options: ["A. Soon after I turned on my PC was there a strange noise.", "B. Scarcely had I turned on my new PC when there was a strange noise.", "C. Hardly had I turned on my new PC than there was a strange noise.", "D. As soon as there was a strange noise, I turned on my new PC."], correct: 1 },
+            { id: 38, text: "Question 38. It is no use trying to persuade her to agree to the proposal.", options: ["A. It is not worth to try to persuade her to agree to the proposal.", "B. To try persuading her to agree to the proposal is not good.", "C. There is no point to try to persuade her to agree to the proposal.", "D. It is a waste of time trying to persuade her to agree to the proposal."], correct: 3 },
+
+            // ========== ĐỌC HIỂU STARTING BUSINESS (39-45) ==========
+            { groupHtml: `<div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8"><h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the article about people who started their own business (39-45)</h3>
+                <div class="space-y-4 text-gray-700 text-justify">
+                    <p><span class="font-semibold">Beautician:</span> I had to rethink my future when the multi-national company I worked for as a marketing executive decided to move my job to the USA. ... I wanted a job where I’d have the chance to interact with people more, and saw a gap in the market for a beauty salon locally. Working for yourself is great as you can make your own mind up about things and you aren’t driven by someone else. But the flipside is that there’s nobody to share the burden with when you wake up in the middle of the night worrying about how you’re going to pay the rent. But I have no regrets.</p>
+                    <p><span class="font-semibold">Gym owner:</span> After seventeen years working in banking, I wanted to try something totally different. A business that used a combination of my financial, sporting and parenting experience, but which didn’t involve such long exhausting hours at the office appealed to me. I came across the concept behind The Little Gym by accident. It caters for children from four months to twelve years. Having control of my own life is a definite high, as is seeing my staff doing a good job. Every day is different, so it’s never boring.</p>
+                    <p><span class="font-semibold">Caterer:</span> I worked for a big international company, but was no longer finding it rewarding. I took six months off and went to Spain with my wife. That’s when we got the idea for Tapas in a Box. The challenge was to work out how to deliver the mix of foods all at once. Once we’d cracked that, we were up and running. I can’t stress too much the thrill you feel when a customer tells you they’ve had a great time.</p>
+                    <p><span class="font-semibold">Virtual PA:</span> I’d been a secretary and PA for twenty years. When the company announced that its European office was to close, I decided to set up my own business. I got my idea because I’d been a virtual PA all along. Now I’ve got all sorts of regular clients, including surveyors, solicitors, an advertising agency and even an author! I never expected such a mix. I can’t wait to see what challenges lie in store.</p>
+                </div></div>` },
+            { id: 39, text: "Question 39. Which person enjoys seeing employees making a success of things?", options: ["A. Beautician", "B. Virtual PA", "C. Caterer", "D. Gym owner"], correct: 3 },
+            { id: 40, text: "Question 40. Which person had to solve a technical problem before launching the business?", options: ["A. Virtual PA", "B. Beautician", "C. Gym owner", "D. Caterer"], correct: 3 },
+            { id: 41, text: "Question 41. Which person is surprised to have attracted such a wide variety of clients?", options: ["A. Caterer", "B. Gym owner", "C. Virtual PA", "D. Beautician"], correct: 2 },
+            { id: 42, text: "Question 42. Which person is happy to have received positive feedback from clients?", options: ["A. Beautician", "B. Gym owner", "C. Caterer", "D. Virtual PA"], correct: 2 },
+            { id: 43, text: "Question 43. Which person sometimes feels anxious about financial aspects of the business?", options: ["A. Beautician", "B. Gym owner", "C. Virtual PA", "D. Caterer"], correct: 0 },
+            { id: 44, text: "Question 44. Which person took time to decide what type of business to start?", options: ["A. Caterer", "B. Gym owner", "C. Beautician", "D. Virtual PA"], correct: 0 },
+            { id: 45, text: "Question 45. Which person was able to draw on experience gained in a similar working situation?", options: ["A. Virtual PA", "B. Gym owner", "C. Beautician", "D. Caterer"], correct: 0 },
+
+            // ========== CLOZE TEST (46-50) ==========
+            { groupHtml: `<div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8"><h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the passage and choose the correct word for each blank (46-50)</h3>
+                <p class="text-gray-700 leading-relaxed">Why is it that many teenagers have the energy to play computer games until late at night but can’t find the energy to get out of bed (46)______ for school? According to a new report, today’s children are in (48)______ of getting so (47)______ sleep that they are putting their mental and physical health in danger. Adults can easily survive on seven to eight hours’ sleep a night, (49)______ teenagers require nine or ten hours. According to medical experts, one in five youngsters (50)______ anything between two and five hours’ sleep a night less than their parents did at their age.</p></div>` },
+            { id: 46, text: "Question 46.", options: ["A. about time", "B. behind time", "C. in time", "D. at time"], correct: 2 },
+            { id: 47, text: "Question 47.", options: ["A. few", "B. much", "C. less", "D. little"], correct: 3 },
+            { id: 48, text: "Question 48.", options: ["A. threat", "B. chance", "C. danger", "D. risk"], correct: 2 },
+            { id: 49, text: "Question 49.", options: ["A. whereas", "B. because", "C. or", "D. so"], correct: 0 },
+            { id: 50, text: "Question 50.", options: ["A. makes", "B. puts", "C. brings", "D. gets"], correct: 3 }
+        ];
+
+        // --- APP STATE ---
+        let userAnswers = {};
+        let isSubmitted = false;
+        let hasStarted = false;
+        let timerInterval;
+        let timeLeft = 60 * 60; // 60 phút
+
+        const qContainer = document.getElementById('questions-container');
+        const pContainer = document.getElementById('pallete-container');
+        const progressText = document.getElementById('progress-text');
+        const timeDisplay = document.getElementById('time-display');
+
+        function init() {
+            renderQuestions();
+            renderPallete();
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+        }
+
+        function startTest() {
+            hasStarted = true;
+            document.getElementById('start-overlay').classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => document.getElementById('start-overlay').classList.add('hidden'), 300);
+            document.getElementById('timer').classList.remove('opacity-50');
+            document.getElementById('header-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('header-submit-btn').disabled = false;
+            document.getElementById('mobile-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('mobile-submit-btn').disabled = false;
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = false);
+            startTimer();
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {});
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+        document.addEventListener('fullscreenchange', () => {
+            const icon = document.getElementById('fs-icon');
+            const btn = document.getElementById('fs-btn');
+            if (document.fullscreenElement) {
+                icon.classList.replace('fa-expand', 'fa-compress');
+                btn.title = "Thu nhỏ";
+            } else {
+                icon.classList.replace('fa-compress', 'fa-expand');
+                btn.title = "Toàn màn hình";
+            }
+        });
+
+        function renderQuestions() {
+            let html = '';
+            questionsData.forEach((q) => {
+                if (q.groupHtml) html += q.groupHtml;
+                else {
+                    html += `
+                        <div class="mb-8 p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md" id="q-block-${q.id}">
+                            <h4 class="font-bold text-gray-800 mb-3 flex items-start gap-2">
+                                <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-sm">${q.id}</span>
+                                <div class="flex-1">${q.text}</div>
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-8" id="options-${q.id}">
+                                ${q.options.map((opt, oIdx) => {
+                                    const labelText = opt.includes('. ') ? opt.split('. ')[1] : opt;
+                                    return `
+                                        <div class="relative option-wrapper">
+                                            <input type="radio" name="q${q.id}" id="q${q.id}_o${oIdx}" value="${oIdx}" class="peer sr-only radio-custom" onchange="handleSelect(${q.id}, ${oIdx})">
+                                            <label for="q${q.id}_o${oIdx}" class="flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 cursor-pointer transition-all hover:bg-gray-50">
+                                                <div class="circle w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-500">
+                                                    ${['A', 'B', 'C', 'D'][oIdx]}
+                                                </div>
+                                                <span class="text-gray-700">${labelText}</span>
+                                            </label>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            qContainer.innerHTML = html;
+        }
+
+        function renderPallete() {
+            let html = '';
+            questionsData.forEach(q => {
+                if (!q.id) return; // skip groupHtml items
+                let stateClass = "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200";
+                if (isSubmitted) {
+                    stateClass = userAnswers[q.id] === q.correct ? "correct" : "wrong";
+                } else if (userAnswers[q.id] !== undefined) {
+                    stateClass = "answered";
+                }
+                html += `<button onclick="scrollToQ(${q.id})" id="pallete-btn-${q.id}" class="pallete-btn w-full aspect-square rounded-lg font-semibold text-sm border-2 flex items-center justify-center transition-colors ${stateClass}">${q.id}</button>`;
+            });
+            pContainer.innerHTML = html;
+            updateProgress();
+        }
+
+        function handleSelect(qId, optIdx) {
+            if (isSubmitted || !hasStarted) return;
+            userAnswers[qId] = optIdx;
+            const btn = document.getElementById(`pallete-btn-${qId}`);
+            if (btn) btn.className = `pallete-btn w-full aspect-square rounded-lg font-semibold text-sm border-2 flex items-center justify-center transition-colors answered`;
+            updateProgress();
+        }
+
+        function updateProgress() {
+            progressText.innerText = `${Object.keys(userAnswers).length}/50`;
+        }
+
+        function scrollToQ(id) {
+            document.getElementById(`q-block-${id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                timeDisplay.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if (timeLeft <= 300) document.getElementById('timer').classList.replace('text-blue-700', 'text-red-600');
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(true); }
+            }, 1000);
+        }
+
+        function confirmSubmit() {
+            if (!hasStarted) return;
+            if (Object.keys(userAnswers).length < 50) {
+                document.getElementById('confirm-msg').innerText = `Bạn mới làm ${Object.keys(userAnswers).length}/50 câu. Bạn muốn nộp bài?`;
+                document.getElementById('confirm-modal').classList.remove('hidden');
+            } else submitTest();
+        }
+
+        function closeConfirmModal() { document.getElementById('confirm-modal').classList.add('hidden'); }
+
+        function submitTest(isAuto = false) {
+            if (isSubmitted || !hasStarted) return;
+            clearInterval(timerInterval);
+            isSubmitted = true;
+            closeConfirmModal();
+            let correctCount = 0;
+            questionsData.forEach(q => { if (q.id !== undefined && userAnswers[q.id] === q.correct) correctCount++; });
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('final-score').innerText = (correctCount * 0.2).toFixed(2);
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+            renderPallete();
+            highlightAnswers();
+        }
+
+        function closeModalAndReview() { document.getElementById('result-modal').classList.add('hidden'); }
+
+        function highlightAnswers() {
+            questionsData.forEach(q => {
+                if (!q.id) return;
+                const wrappers = document.getElementById(`options-${q.id}`)?.querySelectorAll('.option-wrapper');
+                if (!wrappers) return;
+                wrappers[q.correct].classList.add('correct-answer');
+                if (userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.correct) {
+                    wrappers[userAnswers[q.id]].classList.add('wrong-answer');
+                }
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Thi Văn - Fix Lỗi Font</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        body { font-family: 'Inter', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .serif { font-family: 'Lora', serif; }
+        .resizer { width: 8px; cursor: col-resize; background: #cbd5e1; transition: background 0.2s; }
+        .resizer:hover { background: #3b82f6; }
+        textarea { resize: none; border: none; outline: none; }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <header class="h-16 bg-[#2d3e50] text-white flex items-center justify-between px-6 shadow-lg z-50">
+        <div class="flex items-center gap-4">
+            <div class="bg-blue-600 p-2 rounded-lg text-sm font-bold">NGỮ VĂN 10</div>
+            <h1 class="text-slate-200 font-medium">Kỳ thi ĐGNL - Chuyên Sư Phạm</h1>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="bg-slate-700 px-4 py-1.5 rounded-full border border-slate-500 font-mono text-xl">
+                <i class="fa-regular fa-clock text-yellow-400 mr-2"></i><span id="timer">120:00</span>
+            </div>
+            <button onclick="nopBai()" class="bg-[#27ae60] hover:bg-[#2ecc71] px-8 py-2 rounded-md font-bold uppercase transition-all shadow-md">Nộp Bài</button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <section id="left-panel" class="w-1/2 bg-white overflow-y-auto p-10 serif border-r shadow-inner">
+            <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">I. ĐỌC HIỂU (3,0 ĐIỂM)</h2>
+            <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-blue-500 mb-8 shadow-sm">
+                <p class="mb-4 italic text-gray-600">Đọc đoạn trích sau và thực hiện các yêu cầu:</p>
+                <p class="text-xl leading-relaxed text-gray-800">
+                    "Con đường đi đến thành công không bao giờ là một đường thẳng. Nó là một quá trình của những thử nghiệm, sai lầm và học hỏi. Đừng sợ thất bại, bởi mỗi lần ngã xuống là một lần bạn có thêm bài học để đứng dậy vững vàng hơn..."
+                </p>
+                <p class="text-right mt-2 text-gray-500">— (Trích Đánh thức con người phi thường trong bạn)</p>
+            </div>
+            <div class="space-y-6 text-lg text-gray-700">
+                <p><strong>Câu 1:</strong> Xác định phương thức biểu đạt chính của đoạn văn trên.</p>
+                <p><strong>Câu 2:</strong> Theo tác giả, con đường thành công là một quá trình như thế nào?</p>
+                <p><strong>Câu 3:</strong> Tại sao tác giả lại cho rằng "đừng sợ thất bại"?</p>
+            </div>
+            <br><br>
+            <h2 class="text-2xl font-bold text-blue-900 mb-6 border-b-2 border-blue-100 pb-2">II. LÀM VĂN (7,0 ĐIỂM)</h2>
+            <p class="text-lg"><strong>Câu 1 (2,0 điểm):</strong> Viết một đoạn văn (khoảng 200 chữ) trình bày suy nghĩ của em về ý nghĩa của thất bại.</p>
+        </section>
+
+        <div class="resizer" id="dragMe"></div>
+
+        <section class="flex-1 flex flex-col bg-[#f8fafc] relative">
+            <div class="h-10 bg-white border-b px-6 flex items-center justify-between text-slate-400 text-xs font-bold tracking-widest">
+                <span>BÀI LÀM CỦA THÍ SINH</span>
+                <span id="word-count" class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full">0 TỪ</span>
+            </div>
+            <textarea id="editor" class="flex-1 p-12 serif text-2xl leading-[1.8] text-gray-800 bg-transparent shadow-inner" placeholder="Bắt đầu viết bài làm của bạn tại đây..."></textarea>
+        </section>
+    </main>
+
+    <script>
+        // Đồng hồ đếm ngược
+        let seconds = 120 * 60;
+        const timer = document.getElementById('timer');
+        setInterval(() => {
+            if (seconds > 0) {
+                seconds--;
+                let m = Math.floor(seconds / 60);
+                let s = seconds % 60;
+                timer.innerText = `${m}:${s < 10 ? '0' + s : s}`;
+            }
+        }, 1000);
+
+        // Đếm từ & Lưu nháp
+        const editor = document.getElementById('editor');
+        const countBadge = document.getElementById('word-count');
+        editor.addEventListener('input', () => {
+            const words = editor.value.trim() ? editor.value.trim().split(/\s+/).length : 0;
+            countBadge.innerText = words + " TỪ";
+            localStorage.setItem('van_draft_fix', editor.value);
+        });
+
+        // Nộp bài - Xuất file Word chuẩn
+        function nopBai() {
+            const content = editor.value;
+            if (!content) return alert("Bạn chưa viết bài!");
+            
+            const htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'></head>
+                <body style="font-family:'Times New Roman',serif; padding: 50px;">
+                    <h1 style="text-align:center;">BÀI LÀM MÔN NGỮ VĂN</h1>
+                    <p><b>Thời gian:</b> ${new Date().toLocaleString('vi-VN')}</p>
+                    <hr>
+                    <div style="white-space:pre-wrap; font-size: 14pt;">${content}</div>
+                </body>
+                </html>`;
+
+            // \ufeff là chìa khóa để Word hiểu tiếng Việt UTF-8
+            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Bai_Lam_Van_10.doc";
+            link.click();
+        }
+
+        // Kéo giãn màn hình
+        const resizer = document.getElementById('dragMe');
+        const leftPanel = document.getElementById('left-panel');
+        resizer.addEventListener('mousedown', (e) => {
+            const startX = e.clientX;
+            const startWidth = leftPanel.offsetWidth;
+            const onMouseMove = (e) => {
+                const newWidth = ((startWidth + e.clientX - startX) / window.innerWidth) * 100;
+                if (newWidth > 15 && newWidth < 85) leftPanel.style.width = newWidth + '%';
+            };
+            const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            };
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+
+        // Khôi phục bài làm
+        window.onload = () => {
+            const saved = localStorage.getItem('van_draft_fix');
+            if (saved) editor.value = saved;
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kỳ Thi Thử Tuyển Sinh Vào Lớp 10 - Môn Tiếng Anh - Trường THPT Sóc Sơn 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .radio-custom:checked + label {
+            background-color: #ebf5ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .radio-custom:checked + label .circle {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+        
+        .correct-answer label {
+            background-color: #f0fdf4 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+        .correct-answer label .circle {
+            background-color: #22c55e !important;
+            border-color: #22c55e !important;
+            color: white !important;
+        }
+
+        .wrong-answer label {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+        .wrong-answer label .circle {
+            background-color: #ef4444 !important;
+            border-color: #ef4444 !important;
+            color: white !important;
+        }
+
+        .pallete-btn.answered { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .pallete-btn.correct { background-color: #22c55e; color: white; border-color: #22c55e; }
+        .pallete-btn.wrong { background-color: #ef4444; color: white; border-color: #ef4444; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+        
+        .sign-box { border: 2px solid #000; padding: 10px; text-align: center; max-width: 250px; margin: 10px 0; background: #fff; box-shadow: 2px 2px 0px rgba(0,0,0,0.2);}
+        
+        /* Fullscreen styles */
+        :fullscreen body { background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- START OVERLAY (Màn hình chờ) -->
+    <div id="start-overlay" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-80 backdrop-blur-md flex items-center justify-center transition-opacity duration-300">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-11/12 text-center transform scale-100 transition-transform">
+            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+                <i class="fa-solid fa-file-signature text-4xl text-blue-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Kỳ Thi Thử Lớp 10</h2>
+            <p class="text-gray-600 font-medium mb-1">Môn: Tiếng Anh (Mã đề 108)</p>
+            <p class="text-gray-500 text-sm mb-6">Số lượng: 40 câu trắc nghiệm<br>Thời gian: 60 phút</p>
+            
+            <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm rounded-xl p-4 mb-6 text-left">
+                <p class="font-bold flex items-center gap-2 mb-2"><i class="fa-solid fa-triangle-exclamation text-yellow-600"></i> Lưu ý quan trọng:</p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Thời gian làm bài sẽ bắt đầu đếm ngược ngay khi bạn bấm nút khởi tạo.</li>
+                    <li>Đề thi sẽ bị khóa nếu thời gian kết thúc.</li>
+                    <li class="font-medium text-red-500">Vui lòng KHÔNG tải lại trang (F5) trong lúc làm bài để tránh bị mất dữ liệu.</li>
+                </ul>
+            </div>
+            
+            <button onclick="startTest()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg flex justify-center items-center gap-2">
+                BẮT ĐẦU LÀM BÀI <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b z-10 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-blue-600 text-2xl"></i>
+                <div>
+                    <h1 class="font-bold text-gray-800 hidden sm:block">Kỳ Thi Thử Tuyển sinh vào THPT - Môn Tiếng Anh - Trường THPT Sóc Sơn (Mã đề 108)</h1>
+                    <h1 class="font-bold text-gray-800 sm:hidden">Thi Thử Tiếng Anh 10</h1>
+                    <p class="text-xs text-gray-500">Thời gian làm bài: 60 phút</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Fullscreen Button -->
+                <button onclick="toggleFullScreen()" id="fs-btn" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-lg transition-colors" title="Toàn màn hình">
+                    <i class="fa-solid fa-expand text-lg" id="fs-icon"></i>
+                </button>
+
+                <div id="timer" class="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 sm:px-4 py-2 rounded-lg font-mono font-bold text-base sm:text-lg border border-blue-200 shadow-sm opacity-50" title="Đồng hồ sẽ chạy khi bạn bấm bắt đầu">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="time-display">60:00</span>
+                </div>
+                <button onclick="confirmSubmit()" id="header-submit-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-colors shadow-sm hidden md:block opacity-50 cursor-not-allowed" disabled>
+                    Nộp bài
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto w-full flex flex-col md:flex-row overflow-hidden relative">
+        
+        <!-- Left: Questions Area -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 pb-32 md:pb-6 scroll-smooth" id="questions-container">
+            <!-- Questions will be injected here by JS -->
+        </div>
+
+        <!-- Right: Pallete Area -->
+        <div class="w-full md:w-80 bg-white border-l shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] md:shadow-none p-4 flex flex-col absolute bottom-0 md:relative z-20 md:h-full max-h-[40vh] md:max-h-full">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="font-bold text-gray-800">Danh sách câu hỏi</h2>
+                <span id="progress-text" class="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded">0/40</span>
+            </div>
+            
+            <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-5 gap-2 overflow-y-auto pr-1 pb-4 flex-1" id="pallete-container">
+                <!-- Pallete buttons injected by JS -->
+            </div>
+
+            <button onclick="confirmSubmit()" id="mobile-submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-colors shadow-sm mt-2 md:hidden opacity-50 cursor-not-allowed" disabled>
+                Nộp bài ngay
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal Results -->
+    <div id="result-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-md p-6 transform scale-95 transition-transform duration-300" id="result-content">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-trophy text-4xl text-blue-500"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Kết quả bài thi</h2>
+                <p class="text-gray-500 mb-6">Bạn đã hoàn thành bài thi thử Tiếng Anh!</p>
+                
+                <div class="bg-gray-50 rounded-xl p-4 mb-6 grid grid-cols-2 gap-4 border">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500 font-medium">Số câu đúng</p>
+                        <p class="text-3xl font-bold text-green-500"><span id="correct-count">0</span><span class="text-lg text-gray-400">/40</span></p>
+                    </div>
+                    <div class="text-center border-l">
+                        <p class="text-sm text-gray-500 font-medium">Điểm số (Hệ 10)</p>
+                        <p class="text-3xl font-bold text-blue-600" id="final-score">0.0</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="closeModalAndReview()" class="flex-1 bg-white border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-700 font-semibold py-2.5 rounded-xl transition-all">
+                        Xem chi tiết
+                    </button>
+                    <button onclick="location.reload()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-md">
+                        Làm lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-xl shadow-xl w-11/12 max-w-sm p-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Xác nhận nộp bài</h3>
+            <p class="text-gray-600 mb-5 text-sm" id="confirm-msg">Bạn vẫn còn câu hỏi chưa làm. Bạn có chắc chắn muốn nộp bài ngay bây giờ?</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition-colors">Hủy</button>
+                <button onclick="submitTest()" class="px-4 py-2 rounded-lg font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm">Đồng ý nộp</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- DATA ---
+    const questionsData = [
+        {
+            groupHtml: `
+                <div class="bg-white p-5 rounded-xl border shadow-sm mb-6">
+                    <h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Mark the letter A, B, C, or D on your answer sheet to indicate the correct answer to each of the following questions from 1 to 2.</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4 italic">
+                        (1) _________. After a landslide, rumors can travel quickly and make people choose unsafe roads. Local officials usually share updates through radio, posters, and community groups. (2) _________. A calm, verified message often saves more time than a fast guess.
+                    </p>
+                </div>
+            `,
+            id: 1,
+            text: "Question 1. Choose the TOPIC SENTENCE that can BEGIN the text most appropriately.",
+            options: [
+                "A. Disasters are terrible, so people should stop spreading false information",
+                "B. Heavy rain often causes serious damage to roads and bridges",
+                "C. In any natural disaster, reliable information is as important as clean water",
+                "D. Planting more trees is the best way to prevent landslides in mountainous areas"
+            ],
+            correct: 2 // C
+        },
+        {
+            id: 2,
+            text: "Question 2. Put the sentences (a-c) in the correct order, and then fill in the blank to make a logical text.<br><span class='text-sm text-gray-600'>a. Before you share a warning online, check the source and the date carefully.<br>b. If you feel unsure, ask a teacher, neighbor, or local officer for guidance.<br>c. Saving emergency numbers in your phone helps you confirm news quickly.</span>",
+            options: [
+                "A. b - a - c",
+                "B. c - a - b",
+                "C. a - c - b",
+                "D. c - b - a"
+            ],
+            correct: 1 // B
+        },
+        {
+            groupHtml: `
+                <div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8">
+                    <h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Mark the letter A, B, C, or D on your answer sheet to indicate the correct option that best fits each of the numbered blanks from 3 to 8.</h3>
+                    <p class="text-gray-700 leading-relaxed text-justify">
+                        Many teenagers use short-video apps after school to relax. The clips are funny, and the algorithm quickly learns what you like. However, for many students, this (3) _________ a healthy choice because each video leads to another one. Some teens also compare their lives with perfect posts, so they feel worse about themselves. (4) _________ also distract students from their study, especially chat apps. When students try to study with their phones nearby, notifications, (5) _________ them lose focus, keep popping up. They open one message or answer a friend, and suddenly twenty minutes are gone. This can lower their grades and make them tired. (6) _________, a few simple rules can protect their time. For example, they can leave the phone in another room, turn off alerts, and (7) _________ a short break every 30 minutes. To stay productive, they should set small goals such as "reading two pages" or "solving five problems". After homework, social media is fine, but it is smart to prioritize sleep and real conversations. Parents do not need to ban apps; they (8) _________ talk with teens about balance and consequences, and listen without judging.
+                    </p>
+                </div>
+            `,
+            id: 3,
+            text: "Question 3.",
+            options: ["A. rarely is", "B. rarely isn't", "C. is rarely", "D. isn't rarely"],
+            correct: 2 // C
+        },
+        { id: 4, text: "Question 4.", options: ["A. Any other apps", "B. Another app", "C. Many other apps", "D. The other apps"], correct: 2 },
+        { id: 5, text: "Question 5.", options: ["A. on which make", "B. that can make", "C. which can make", "D. that makes on"], correct: 2 },
+        { id: 6, text: "Question 6.", options: ["A. Therefore", "B. Meanwhile", "C. In contrast", "D. Moreover"], correct: 2 },
+        { id: 7, text: "Question 7.", options: ["A. do", "B. take", "C. make", "D. give"], correct: 1 },
+        { id: 8, text: "Question 8.", options: ["A. may", "B. can", "C. should", "D. might"], correct: 2 },
+        
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C or D to indicate the correct answer (9-16)</h3></div>`,
+            id: 9, text: "Question 9. The problem of _________ among young people is hard to solve.",
+            options: ["A. employers", "B. unemployed", "C. unemploying", "D. unemployment"],
+            correct: 3
+        },
+        { id: 10, text: "Question 10. If Alex _________ up the word in the dictionary, he _________ its meaning.", options: ["A. looks / won't know", "B. looks / will know", "C. looks / would know", "D. looked / will know"], correct: 1 },
+        { id: 11, text: "Question 11. There _________ a beautiful park near the river for decades, and it _________ many visitors every weekend.", options: ["A. was / attracted", "B. has been / attracts", "C. have been / attracts", "D. is / attracted"], correct: 1 },
+        { id: 12, text: "Question 12. For our science project, we had to _________ a simple idea to save electricity at home.", options: ["A. go over", "B. pick up", "C. put up with", "D. come up with"], correct: 3 },
+        { id: 13, text: "Question 13. He runs _________ we expected. Therefore, he won the race.", options: ["A. more fastly than", "B. more fast than", "C. faster than", "D. as fastly as"], correct: 2 },
+        { id: 14, text: "Question 14. Jane asks for permission to open the door and Bob responds.<br>Jane: \"Excuse me, do you mind if I open the door? It's a bit stuffy here.\"<br>Bob: \"_________\"", options: ["A. Not at all. Go ahead.", "B. Sure, you can't open it.", "C. No, I want you not to open it.", "D. Never mind. That would be great!"], correct: 0 },
+        { id: 15, text: "Question 15. _________ rich benefit the most from advanced technology, while _________ poor often struggle to access it.", options: ["A. The/ a", "B. A/ the", "C. A/ a", "D. The/ the"], correct: 3 },
+        { id: 16, text: "Question 16. Jane _________ be an avid tennis player, but her busy schedule prevents regular practice.", options: ["A. wasn't used to", "B. isn't used to", "C. didn't use to", "D. used to"], correct: 3 },
+
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C or D to indicate the sentence that is closest in meaning (17-18)</h3></div>`,
+            id: 17, text: "Question 17. She asked me where I had bought my dress 2 days before.",
+            options: [
+                "A. She said: \"Where do you buy your dress 2 days later?\"",
+                "B. She said: \"Where have you bought your dress 2 days before?\"",
+                "C. She asked: \"Where did you buy your dress 2 days ago?\"",
+                "D. She asked: \"Where had you bought my dress 2 days ago?\""
+            ], correct: 2
+        },
+        {
+            id: 18, text: "Question 18. I think we should raise money to restore our aging man-made wonders.",
+            options: [
+                "A. I suggest raising money to restore our aging man-made wonders.",
+                "B. I suggest we could raise money to restore our aging man-made wonders.",
+                "C. I suggest to raise money to restore our aging man-made wonders.",
+                "D. I suggested that we should raise money to restore our aging man-made wonders."
+            ], correct: 0
+        },
+
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C or D to indicate the sentence that is best made from the given cues (19-20)</h3></div>`,
+            id: 19, text: "Question 19. The dishes / my aunt / cook / party / last week / be / delicious.",
+            options: [
+                "A. The dishes which my aunt cooked for the party last week was delicious.",
+                "B. The dishes that my aunt was cooking for the party last week were delicious.",
+                "C. The dishes which my aunt cooks for the party last week are delicious.",
+                "D. The dishes that my aunt cooked for the party last week were delicious."
+            ], correct: 3
+        },
+        {
+            id: 20, text: "Question 20. Sometimes / my sister/ I/ wish/ parents/ put/ themselves/ shoes.",
+            options: [
+                "A. Sometimes my sister and I wish our parents can put themselves in their shoes.",
+                "B. Sometimes my sister and I wish our parents could put themselves in our shoes.",
+                "C. Sometimes my sister and I wish my parents would put themselves on our shoes.",
+                "D. Sometimes my sister or I wish our parents put themselves in their shoes."
+            ], correct: 1
+        },
+
+        {
+            groupHtml: `
+                <div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8">
+                    <h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the following passage and mark the letter A, B, C or D to indicate the correct answer (21-26)</h3>
+                    <p class="text-gray-700 leading-relaxed mb-3 indent-6 text-justify">
+                        Water puppetry is a unique Vietnamese art form that began in the rice fields of the Red River Delta over a thousand years ago. Farmers created this special type of theater to entertain their communities during festivals and celebrations. The puppets dance on water while hidden performers control them from behind a screen. However, this beautiful tradition is now facing serious challenges.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mb-3 indent-6 text-justify">
+                        In the past, almost every village in northern Vietnam had its own water puppet troupe. Young people learned the art from their parents and grandparents. Performances were common during harvest festivals, Lunar New Year, and other important occasions. The shows told stories about daily life, history, and folk tales that everyone knew and loved. This tradition helped <b>preserve</b> the cultural identity of Vietnamese villages and brought communities together.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed mb-3 indent-6 text-justify">
+                        Today, fewer young people want to learn water puppetry. Many leave their villages to find jobs in cities, where they can earn more money. The training is long and difficult, and performances don't pay well. Modern entertainment like movies, video games, and social media are more attractive to the youth. As older puppet masters pass away, their knowledge and skills disappear with them. The art form that once <b>flourished</b> in hundreds of villages now survives in only a few places, mainly in tourist shows in Hanoi.
+                    </p>
+                    <p class="text-gray-700 leading-relaxed indent-6 text-justify">
+                        Cultural experts are working hard to save this tradition. They organize training programs and try to make performances more interesting for young audiences. Some believe that if water puppetry can adapt to modern times while keeping its traditional spirit, it can survive for future generations.
+                    </p>
+                </div>
+            `,
+            id: 21, text: "Question 21. What is the main idea of the passage?",
+            options: [
+                "A. Water puppetry once united villages but now declines as fewer young people learn it.",
+                "B. Fewer young people learn Vietnamese water puppetry, but experts are trying to preserve it.",
+                "C. Water puppetry is an ancient Vietnamese tradition that needs modern adaptation to survive.",
+                "D. Ancient Vietnamese water puppetry helps to preserve culture but now faces serious challenges."
+            ], correct: 3
+        },
+        { id: 22, text: "Question 22. The word \"preserve\" in paragraph 2 is OPPOSITE meaning to ______.", options: ["A. change", "B. forget", "C. protect", "D. destroy"], correct: 3 },
+        { id: 23, text: "Question 23. Which of the following is NOT mentioned as a reason why fewer young people learn water puppetry today?", options: ["A. Older puppet masters pass away.", "B. Learners have to experience long and difficult training.", "C. Modern entertainment is more attractive to them.", "D. They move to cities to earn more money."], correct: 0 },
+        { id: 24, text: "Question 24. The word \"flourished\" in paragraph 3 is CLOSEST in meaning to ______.", options: ["A. grew strongly", "B. started early", "C. developed slowly", "D. moved quickly"], correct: 0 },
+        { id: 25, text: "Question 25. Which of the following is TRUE about water puppetry in Vietnam at present?", options: ["A. It attracts more young performers now than in the past decades.", "B. It is mainly kept alive through tourism rather than traditional village practices.", "C. It has completely disappeared from all Vietnamese villages except Hanoi.", "D. It has successfully adapted to modern entertainment without losing its traditions."], correct: 1 },
+        { id: 26, text: "Question 26. Which statement best reflects the passage's view about saving water puppetry for the future?", options: ["A. It will survive naturally because it has existed for over a thousand years.", "B. It should stay exactly the same, even if fewer people watch it.", "C. It needs to adapt to modern times while keeping its traditional spirit.", "D. It can only be saved if young people stop using social media and games."], correct: 2 },
+
+        {
+            groupHtml: `
+                <div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8">
+                    <h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Four phrases/sentences have been removed from the text below. Choose the correct option that best fits each of the numbered blanks from 27 to 30.</h3>
+                    <p class="text-gray-700 leading-relaxed mb-4 text-justify">
+                        Traditional tourism can damage the environment in many ways. <b>(27) _________</b>, like pollution, too much garbage, and depleted natural resources. Hotels and restaurants use large amounts of electricity and produce waste. When too many visitors come to one place, they can destroy forests, beaches, and wildlife habitats. Local people may also lose their traditional way of life.<br><br>
+                        <b>(28) _________</b>. Green tourism, also called sustainable tourism, is a way of traveling that protects the environment and helps local communities. Eco-friendly hotels use solar power and save water. <b>(29) _________</b>, like bird watching or hiking on marked trails. Buying products from local sellers helps families earn money and keeps traditional crafts alive. <b>(30) _________</b>, such as planting trees or cleaning beaches during their vacation.<br><br>
+                        Everyone can practice green tourism. When we travel responsibly, we help preserve beautiful places for future generations to enjoy.
+                    </p>
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 text-sm font-medium text-gray-700">
+                        <p class="mb-1">Answer choices:</p>
+                        A. Some travelers even participate in conservation projects<br>
+                        B. Tourists can choose activities that don't harm animals or plants<br>
+                        C. Popular tourist destinations often face problems<br>
+                        D. Green tourism offers better solutions
+                    </div>
+                </div>
+            `,
+            id: 27, text: "Question 27.", options: ["A. Some travelers even participate in conservation projects", "B. Tourists can choose activities that don't harm animals or plants", "C. Popular tourist destinations often face problems", "D. Green tourism offers better solutions"], correct: 2 },
+        { id: 28, text: "Question 28.", options: ["A. Some travelers even participate in conservation projects", "B. Tourists can choose activities that don't harm animals or plants", "C. Popular tourist destinations often face problems", "D. Green tourism offers better solutions"], correct: 3 },
+        { id: 29, text: "Question 29.", options: ["A. Some travelers even participate in conservation projects", "B. Tourists can choose activities that don't harm animals or plants", "C. Popular tourist destinations often face problems", "D. Green tourism offers better solutions"], correct: 1 },
+        { id: 30, text: "Question 30.", options: ["A. Some travelers even participate in conservation projects", "B. Tourists can choose activities that don't harm animals or plants", "C. Popular tourist destinations often face problems", "D. Green tourism offers better solutions"], correct: 0 },
+
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Read the following notices/messages and mark the correct answer (31-32)</h3></div>`,
+            id: 31, 
+            text: `Question 31. What does the sign mean?
+                <div class="sign-box font-bold flex flex-col items-center">
+                    <div class="bg-black text-white w-full py-1 text-lg tracking-widest">WARNING</div>
+                    <div class="flex items-center gap-2 my-2">
+                        <i class="fa-solid fa-dog text-3xl"></i>
+                        <div class="text-sm leading-tight text-left">BEWARE<br>OF<br>DOG</div>
+                    </div>
+                    <div class="bg-black text-white w-full py-1 text-sm">NO TRESPASSING</div>
+                </div>`, 
+            options: [
+                "A. You mustn't pass the area or you'll be attacked by a dog.",
+                "B. You are not allowed to bring your dog into this area. You need a permit.",
+                "C. You can't take pictures with a dog here. You need a permit.",
+                "D. Run away or a dog will pass the area and attack you."
+            ], correct: 0
+        },
+        { 
+            id: 32, 
+            text: `Question 32. What does the notice say?
+                <div class="sign-box bg-gray-100 flex flex-col justify-center shadow-inner">
+                    <div class="font-bold text-lg mb-1">SPORTS CLUB</div>
+                    <div class="font-bold text-sm mb-2">NOTICE</div>
+                    <div class="text-xs italic">Closed for Maintenance<br>Monday to Wednesday</div>
+                </div>`, 
+            options: [
+                "A. The club will remain closed for maintenance on Tuesday.",
+                "B. People can use the club any day except for the weekend.",
+                "C. The sports club is open on Thursday for maintenance.",
+                "D. The club opens earlier than usual from Thursday mornings."
+            ], correct: 0
+        },
+
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word that differs from the other three in the position of primary stress (33-34)</h3></div>`,
+            id: 33, text: "Question 33.", options: ["A. candidate", "B. reference", "C. requirement", "D. paradise"], correct: 2 },
+        { id: 34, text: "Question 34.", options: ["A. preserve", "B. balance", "C. suburb", "D. schedule"], correct: 0 },
+
+        {
+            groupHtml: `
+                <div class="bg-white p-5 rounded-xl border shadow-sm mb-6 mt-8">
+                    <h3 class="font-bold text-gray-800 mb-3 border-l-4 border-blue-500 pl-3">Read the following announcement and mark the letter to indicate the correct option (35-38)</h3>
+                    <div class="text-center mb-4">
+                        <h4 class="font-bold text-green-700 text-lg"><i class="fa-solid fa-leaf"></i> GREEN TEENS: WEEKLY ENVIRONMENT UPDATE <i class="fa-solid fa-leaf"></i></h4>
+                    </div>
+                    <p class="text-gray-700 leading-relaxed mb-3">
+                        Our school's "Green Earth" club is calling for all students to take action to protect our surroundings. Small changes in our daily routines can lead to a huge impact <b>(35) _________</b> the planet. Here are some simple ways you can help:
+                    </p>
+                    <ul class="list-none space-y-2 text-gray-700 mb-3 pl-2">
+                        <li><i class="fa-regular fa-square"></i> First, try to reduce your <b>(36) _________</b> by walking or cycling to school instead of asking for a motorbike ride.</li>
+                        <li><i class="fa-regular fa-square"></i> Second, remember that <b>(37) _________</b> student should bring their own reusable water bottle to reduce plastic waste in the canteen.</li>
+                        <li><i class="fa-regular fa-square"></i> Third, participate in our "Clean Campus" day. We need community <b>(38) _________</b> to pick up litter around the school yard and plant flowers in the garden.</li>
+                    </ul>
+                    <p class="text-gray-700 font-medium italic text-center">The event will start at 7:30 AM this Saturday. Let's join hands to keep our school clean, green, and beautiful!</p>
+                </div>
+            `,
+            id: 35, text: "Question 35.", options: ["A. with", "B. on", "C. in", "D. at"], correct: 1 },
+        { id: 36, text: "Question 36.", options: ["A. routine", "B. regulation", "C. lifestyle", "D. carbon footprint"], correct: 3 },
+        { id: 37, text: "Question 37.", options: ["A. many", "B. all", "C. every", "D. most"], correct: 2 },
+        { id: 38, text: "Question 38.", options: ["A. volunteers", "B. visitors", "C. customers", "D. passengers"], correct: 0 },
+
+        {
+            groupHtml: `<div class="mt-8 mb-4 border-b-2 border-gray-200 pb-2"><h3 class="font-bold text-gray-800">Mark the letter A, B, C, or D to indicate the word whose underlined part differs from the other three in pronunciation (39-40)</h3></div>`,
+            id: 39, text: "Question 39.", options: ["A. <u>i</u>tinerary", "B. tour<u>i</u>sm", "C. pun<u>i</u>sh", "D. safar<u>i</u>"], correct: 0 },
+        { id: 40, text: "Question 40.", options: ["A. laugh<u>ed</u>", "B. lik<u>ed</u>", "C. pleas<u>ed</u>", "D. wash<u>ed</u>"], correct: 2 }
+    ];
+
+    // --- APP STATE ---
+    let userAnswers = {};
+    let isSubmitted = false;
+    let hasStarted = false; // Trạng thái kiểm tra đã bấm bắt đầu chưa
+    let timerInterval;
+    let timeLeft = 60 * 60; // 60 phút
+
+    // --- DOM ELEMENTS ---
+    const qContainer = document.getElementById('questions-container');
+    const pContainer = document.getElementById('pallete-container');
+    const progressText = document.getElementById('progress-text');
+    const timeDisplay = document.getElementById('time-display');
+
+    // --- INITIALIZATION ---
+    function init() {
+        renderQuestions();
+        renderPallete();
+        // Cố tình vô hiệu hóa tất cả input ban đầu để không click chui được
+        document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+    }
+
+    // --- BẮT ĐẦU LÀM BÀI ---
+    function startTest() {
+        hasStarted = true;
+        
+        // Ẩn màn hình chờ
+        document.getElementById('start-overlay').classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => document.getElementById('start-overlay').classList.add('hidden'), 300);
+
+        // Bật lại các nút nộp bài và hiệu ứng đồng hồ
+        document.getElementById('timer').classList.remove('opacity-50');
+        document.getElementById('header-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('header-submit-btn').disabled = false;
+        document.getElementById('mobile-submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+        document.getElementById('mobile-submit-btn').disabled = false;
+
+        // Mở khóa các câu hỏi
+        document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = false);
+
+        // Khởi động đồng hồ
+        startTimer();
+    }
+
+    // --- FULLSCREEN LOGIC ---
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.error(`Lỗi toàn màn hình: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+        const icon = document.getElementById('fs-icon');
+        const btn = document.getElementById('fs-btn');
+        if (document.fullscreenElement) {
+            icon.classList.replace('fa-expand', 'fa-compress');
+            btn.title = "Thu nhỏ";
+        } else {
+            icon.classList.replace('fa-compress', 'fa-expand');
+            btn.title = "Toàn màn hình";
+        }
+    });
+
+    // --- RENDER LOGIC ---
+    function renderQuestions() {
+        let html = '';
+        questionsData.forEach((q) => {
+            if (q.groupHtml) html += q.groupHtml;
+            html += `
+                <div class="mb-8 p-4 bg-white rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md" id="q-block-${q.id}">
+                    <h4 class="font-bold text-gray-800 mb-3 flex items-start gap-2">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-sm">${q.id}</span>
+                        <div class="flex-1">${q.text}</div>
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-8" id="options-${q.id}">
+                        ${q.options.map((opt, oIdx) => {
+                            const labelText = opt.includes('. ') ? opt.split('. ')[1] : opt;
+                            return `
+                                <div class="relative option-wrapper">
+                                    <input type="radio" name="q${q.id}" id="q${q.id}_o${oIdx}" value="${oIdx}" class="peer sr-only radio-custom" onchange="handleSelect(${q.id}, ${oIdx})">
+                                    <label for="q${q.id}_o${oIdx}" class="flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 cursor-pointer transition-all hover:bg-gray-50">
+                                        <div class="circle w-6 h-6 rounded-full border-2 border-gray-300 flex-shrink-0 flex items-center justify-center text-xs font-bold text-gray-500">
+                                            ${['A', 'B', 'C', 'D'][oIdx]}
+                                        </div>
+                                        <span class="text-gray-700">${labelText}</span>
+                                    </label>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        });
+        qContainer.innerHTML = html;
+    }
+
+    function renderPallete() {
+        let html = '';
+        questionsData.forEach(q => {
+            let stateClass = "bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200";
+            if (isSubmitted) {
+                stateClass = userAnswers[q.id] === q.correct ? "correct" : "wrong";
+            } else if (userAnswers[q.id] !== undefined) {
+                stateClass = "answered";
+            }
+            html += `<button onclick="scrollToQ(${q.id})" id="pallete-btn-${q.id}" class="pallete-btn w-full aspect-square rounded-lg font-semibold text-sm border-2 flex items-center justify-center transition-colors ${stateClass}">${q.id}</button>`;
+        });
+        pContainer.innerHTML = html;
+        updateProgress();
+    }
+
+    function handleSelect(qId, optIdx) {
+        if (isSubmitted || !hasStarted) return; // Khóa click nếu chưa bắt đầu
+        userAnswers[qId] = optIdx;
+        const btn = document.getElementById(`pallete-btn-${qId}`);
+        btn.className = `pallete-btn w-full aspect-square rounded-lg font-semibold text-sm border-2 flex items-center justify-center transition-colors answered`;
+        updateProgress();
+    }
+
+    function updateProgress() {
+        progressText.innerText = `${Object.keys(userAnswers).length}/40`;
+    }
+
+    function scrollToQ(id) {
+        document.getElementById(`q-block-${id}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            timeDisplay.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            if (timeLeft <= 300) document.getElementById('timer').classList.replace('text-blue-700', 'text-red-600');
+            if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(true); }
+        }, 1000);
+    }
+
+    function confirmSubmit() {
+        if (!hasStarted) return;
+        if (Object.keys(userAnswers).length < 40) {
+            document.getElementById('confirm-msg').innerText = `Bạn mới làm ${Object.keys(userAnswers).length}/40 câu. Bạn muốn nộp bài?`;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        } else submitTest();
+    }
+
+    function closeConfirmModal() { document.getElementById('confirm-modal').classList.add('hidden'); }
+
+    function submitTest(isAuto = false) {
+        if (isSubmitted || !hasStarted) return;
+        clearInterval(timerInterval);
+        isSubmitted = true;
+        closeConfirmModal();
+        let correctCount = 0;
+        questionsData.forEach(q => { if (userAnswers[q.id] === q.correct) correctCount++; });
+        document.getElementById('correct-count').innerText = correctCount;
+        document.getElementById('final-score').innerText = (correctCount * 0.25).toFixed(2);
+        document.getElementById('result-modal').classList.remove('hidden');
+        
+        // Khóa lại các nút để không cho sửa
+        document.querySelectorAll('input[type="radio"]').forEach(el => el.disabled = true);
+        
+        renderPallete();
+        highlightAnswers();
+    }
+
+    function closeModalAndReview() { document.getElementById('result-modal').classList.add('hidden'); }
+
+    function highlightAnswers() {
+        questionsData.forEach(q => {
+            const wrappers = document.getElementById(`options-${q.id}`).querySelectorAll('.option-wrapper');
+            wrappers[q.correct].classList.add('correct-answer');
+            if (userAnswers[q.id] !== undefined && userAnswers[q.id] !== q.correct) {
+                wrappers[userAnswers[q.id]].classList.add('wrong-answer');
+            }
+        });
+    }
+
+    init();
+</script>
+</body>
+</html>

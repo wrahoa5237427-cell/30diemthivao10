@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destination B2 - Unit 2: Travel and transport (Full)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8fafc; font-family: 'Inter', 'Segoe UI', sans-serif; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .tab-btn.active { color: #2563eb; border-bottom: 3px solid #2563eb; background-color: #eff6ff; font-weight: bold; }
+        .content-section { display: none; animation: fadeIn 0.4s ease; }
+        .content-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Inputs Styling */
+        .inline-input {
+            border: none; border-bottom: 2px solid #cbd5e1;
+            background: transparent; padding: 2px 8px; text-align: center;
+            font-weight: 600; color: #1e293b; width: 140px;
+            transition: all 0.2s; outline: none;
+        }
+        .inline-input:focus { border-bottom-color: #3b82f6; background-color: #eff6ff; }
+        
+        .inline-select {
+            appearance: none; background-color: #f1f5f9; border: 1px solid #cbd5e1;
+            padding: 4px 12px 4px 12px; border-radius: 6px; font-weight: 600;
+            color: #1e293b; cursor: pointer; outline: none; transition: all 0.2s;
+        }
+        .inline-select:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); }
+
+        /* Correct/Incorrect States */
+        .is-correct-radio + label { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
+        .is-incorrect-radio + label { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+        
+        .is-correct-input { border-bottom-color: #22c55e !important; color: #166534 !important; background-color: #dcfce7; border-radius: 4px; border: 1px solid #22c55e; }
+        .is-incorrect-input { border-bottom-color: #ef4444 !important; color: #991b1b !important; background-color: #fee2e2; border-radius: 4px; border: 1px solid #ef4444;}
+        
+        .correct-hint-border { border: 2px dashed #22c55e !important; background-color: #f0fdf4 !important; }
+
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100; }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    </style>
+</head>
+<body class="text-slate-800 pb-24">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl md:text-2xl text-slate-800 tracking-tight">Destination B2</h1>
+                    <p class="text-sm text-blue-600 font-semibold uppercase tracking-wider">Unit 2: Travel & Transport</p>
+                </div>
+            </div>
+            <div class="flex gap-2 md:gap-3">
+                <button onclick="saveProgress()" class="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg transition">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> <span class="hidden sm:inline">Lưu bài</span>
+                </button>
+                <button onclick="checkAnswers()" class="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-md transition transform active:scale-95">
+                    <i class="fa-solid fa-check"></i> Chấm điểm
+                </button>
+            </div>
+        </div>
+
+        <!-- Thanh Tabs cuộn ngang -->
+        <div class="max-w-7xl mx-auto px-2 flex overflow-x-auto hide-scrollbar border-t border-slate-100 bg-white">
+            <button onclick="switchTab('vocab')" class="tab-btn active px-4 py-3 text-sm whitespace-nowrap transition" data-target="vocab"><i class="fa-solid fa-book text-blue-500 mr-2"></i>Từ vựng</button>
+            <button onclick="switchTab('ex-a')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-a">Bài A</button>
+            <button onclick="switchTab('ex-b')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-b">Bài B</button>
+            <button onclick="switchTab('ex-c')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-c">Bài C</button>
+            <button onclick="switchTab('ex-d')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-d">Bài D</button>
+            <button onclick="switchTab('ex-e')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-e">Bài E</button>
+            <button onclick="switchTab('ex-f')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-f">Bài F</button>
+            <button onclick="switchTab('ex-g')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-g">Bài G</button>
+            <button onclick="switchTab('ex-h')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-h">Bài H</button>
+            <button onclick="switchTab('ex-i')" class="tab-btn px-4 py-3 text-sm whitespace-nowrap text-slate-500 hover:text-blue-600 transition" data-target="ex-i">Bài I</button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-8">
+
+        <!-- ================= TỪ VỰNG ================= -->
+        <div id="vocab" class="content-section active">
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4 border-l-4 border-blue-500 pl-3">Topic vocabulary in contrast</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <ul class="space-y-3 divide-y divide-slate-100">
+                            <li class="pt-2 flex justify-between"><span class="font-bold">voyage / journey / trip / travel / excursion</span> <span class="text-slate-500 text-sm">Các loại chuyến đi/hành trình</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">view / sight</span> <span class="text-slate-500 text-sm">Khung cảnh / Tầm nhìn, cảnh đẹp</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">world / earth</span> <span class="text-slate-500 text-sm">Thế giới / Trái đất</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">area / territory</span> <span class="text-slate-500 text-sm">Khu vực / Lãnh thổ</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">season / period</span> <span class="text-slate-500 text-sm">Mùa / Khoảng thời gian</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">fare / ticket / fee</span> <span class="text-slate-500 text-sm">Tiền xe / Vé / Lệ phí</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">miss / lose</span> <span class="text-slate-500 text-sm">Lỡ (chuyến) / Đánh mất</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">take / bring / go</span> <span class="text-slate-500 text-sm">Mang đi / Mang đến / Đi</span></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <ul class="space-y-3 divide-y divide-slate-100">
+                            <li class="pt-2 flex justify-between"><span class="font-bold">book / keep</span> <span class="text-slate-500 text-sm">Đặt trước / Giữ lại</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">arrive / reach</span> <span class="text-slate-500 text-sm">Đến nơi</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">live / stay</span> <span class="text-slate-500 text-sm">Sống / Lưu trú, ở tạm</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">border / edge / line</span> <span class="text-slate-500 text-sm">Biên giới / Rìa, mép / Đường kẻ</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">length / distance</span> <span class="text-slate-500 text-sm">Chiều dài / Khoảng cách</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">guide / lead</span> <span class="text-slate-500 text-sm">Hướng dẫn / Dẫn dắt</span></li>
+                            <li class="pt-2 flex justify-between"><span class="font-bold">native / home</span> <span class="text-slate-500 text-sm">Bản xứ, quê quán / Nhà</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-10">
+                <h2 class="text-2xl font-bold text-blue-800 mb-4 border-l-4 border-blue-500 pl-3">Phrasal verbs</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">catch up with</span> <span class="text-sm">Bắt kịp với (ai/cái gì)</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">check in</span> <span class="text-sm">Làm thủ tục nhận phòng/lên máy bay</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">check out</span> <span class="text-sm">Làm thủ tục trả phòng</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">drop off</span> <span class="text-sm">Cho ai xuống xe / ngủ gật</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">get back</span> <span class="text-sm">Trở về từ một nơi nào đó</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">go away</span> <span class="text-sm">Đi nghỉ mát / Rời đi</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">keep up with</span> <span class="text-sm">Theo kịp, duy trì cùng tốc độ</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">make for</span> <span class="text-sm">Đi về hướng</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">pick up</span> <span class="text-sm">Đón ai đó bằng xe</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">pull in</span> <span class="text-sm">Tấp xe vào lề</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">run over</span> <span class="text-sm">Tông xe vào</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">see off</span> <span class="text-sm">Tiễn ai đó</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">set out / set off</span> <span class="text-sm">Khởi hành</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">take off</span> <span class="text-sm">Cất cánh (máy bay)</span></div>
+                    <div class="bg-indigo-50 p-3 rounded-lg border border-indigo-100"><span class="font-bold text-indigo-700 block">turn round</span> <span class="text-sm">Quay đầu lại</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTML Helper Function via JS to generate radio options -->
+        <script>
+            function renderRadios(qID, question, options) {
+                let html = `<div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 mb-4">
+                    <p class="font-medium text-lg mb-4"><span class="text-blue-600 font-bold mr-2 w-6 inline-block">${qID.replace(/\D/g,'')}.</span> ${question}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
+                const letters = ['A', 'B', 'C', 'D'];
+                options.forEach((opt, idx) => {
+                    html += `
+                        <div class="relative">
+                            <input type="radio" name="${qID}" id="${qID}_${letters[idx]}" value="${letters[idx]}" class="peer hidden">
+                            <label for="${qID}_${letters[idx]}" class="block w-full p-3 border-2 border-slate-200 rounded-lg cursor-pointer peer-checked:border-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 hover:bg-slate-50 transition">
+                                <span class="font-bold mr-2 text-slate-400 peer-checked:text-blue-600">${letters[idx]}</span> ${opt}
+                            </label>
+                        </div>`;
+                });
+                html += `</div></div>`;
+                document.write(html);
+            }
+        </script>
+
+        <!-- ================= BÀI A ================= -->
+        <div id="ex-a" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">A</span> Choose the correct answer.</h2>
+            <script>
+                renderRadios('A1', 'You need a passport to cross the ................. between Mexico and the United States.', ['edge', 'line', 'border', 'rim']);
+                renderRadios('A2', 'The hotel where we are ................. is quite luxurious.', ['living', 'remaining', 'existing', 'staying']);
+                renderRadios('A3', 'When you ................. your destination, your tour guide will meet you at the airport.', ['arrive', 'get', 'reach', 'achieve']);
+                renderRadios('A4', 'It can be quite busy here during the tourist ................. .', ['season', 'period', 'phase', 'stage']);
+                renderRadios('A5', 'David ................. me to the train station every morning.', ['goes', 'takes', 'has', 'makes']);
+                renderRadios('A6', 'I always enjoy our school ................. to France.', ['excursion', 'journey', 'trip', 'travel']);
+                renderRadios('A7', 'Hurry up, or we\'ll ................. the bus!', ['avoid', 'miss', 'drop', 'lose']);
+                renderRadios('A8', 'The brochure says that the hotel has a great ................. of the sea.', ['appearance', 'look', 'sight', 'view']);
+                renderRadios('A9', 'I must remember to ................. a souvenir back from Spain for my grandmother.', ['go', 'take', 'bring', 'keep']);
+                renderRadios('A10', 'The ................. from London to Berlin is about 919 kilometres.', ['measure', 'length', 'gap', 'distance']);
+                renderRadios('A11', 'Make sure you ................. a hotel before you come to our island, especially in the summer.', ['book', 'keep', 'put', 'take']);
+                renderRadios('A12', 'I live in Barcelona, but my ................. town is Madrid.', ['birth', 'home', 'native', 'origin']);
+            </script>
+        </div>
+
+        <!-- ================= BÀI B ================= -->
+        <div id="ex-b" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">B</span> Circle the correct word.</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 text-lg leading-relaxed">
+                <div class="flex flex-wrap items-center gap-2"><span class="text-blue-600 font-bold w-6">1</span> I hope to go on a trip round the <select id="B1" class="inline-select mx-1"><option value="">--chọn--</option><option value="world">world</option><option value="earth">earth</option></select> one day.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">2</span> You learn a lot about the local <select id="B2" class="inline-select mx-1"><option value="">--chọn--</option><option value="territory">territory</option><option value="area">area</option></select> by speaking to local people.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">3</span> It's good to have someone to <select id="B3" class="inline-select mx-1"><option value="">--chọn--</option><option value="lead">lead</option><option value="guide">guide</option></select> you when you are on holiday.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">4</span> I get the train to work every day and the <select id="B4" class="inline-select mx-1"><option value="">--chọn--</option><option value="fare">fare</option><option value="fee">fee</option></select> is quite expensive.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">5</span> Captain Cook discovered Australia on a <select id="B5" class="inline-select mx-1"><option value="">--chọn--</option><option value="voyage">voyage</option><option value="travel">travel</option></select> to the Pacific.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">6</span> Most tourist attractions in London charge an admission <select id="B6" class="inline-select mx-1"><option value="">--chọn--</option><option value="fee">fee</option><option value="ticket">ticket</option></select>.</div>
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6">7</span> The sunset over Niagara Falls really is a magnificent <select id="B7" class="inline-select mx-1"><option value="">--chọn--</option><option value="look">look</option><option value="sight">sight</option></select>.</div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI C ================= -->
+        <div id="ex-c" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">C</span> Complete using the correct form of the words in the box.</h2>
+            <div class="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl flex flex-wrap gap-4 font-bold justify-center mb-6 tracking-wide">
+                <span>catch</span> &bull; <span>check</span> &bull; <span>get</span> &bull; <span>go</span> &bull; <span>make</span> &bull; <span>pick</span> &bull; <span>pull</span> &bull; <span>see</span>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 text-lg leading-loose">
+                <div><span class="text-blue-600 font-bold w-6 inline-block">1</span> Let's go to the airport to <input type="text" id="C1" class="inline-input w-24"> Grandpa off when he flies back home.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">2</span> If it starts to rain, <input type="text" id="C2" class="inline-input w-24"> for a nearby cave to wait for it to pass.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">3</span> We would like to remind all guests that they must <input type="text" id="C3" class="inline-input w-24"> out before midday.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">4</span> Please <input type="text" id="C4" class="inline-input w-24"> in and stop so that I can buy something to drink.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">5</span> Every Saturday night my dad <input type="text" id="C5" class="inline-input w-24"> us up outside the cinema.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">6</span> I think the neighbours have <input type="text" id="C6" class="inline-input w-24"> away for the weekend.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">7</span> John's up ahead so Greg is pedalling fast to <input type="text" id="C7" class="inline-input w-24"> up with him.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">8</span> We're going on holiday tomorrow, but we'll call you when we <input type="text" id="C8" class="inline-input w-24"> back.</div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI D ================= -->
+        <div id="ex-d" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">D</span> Write a phrasal verb in the correct form to replace the words in italics.</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 text-lg leading-loose">
+                <div><span class="text-blue-600 font-bold w-6 inline-block">1</span> We can <i class="text-slate-500">start our journey</i> <input type="text" id="D1" class="inline-input"> towards the mountains at dawn.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">2</span> Dad fetched the luggage while Mum <i class="text-slate-500">registered</i> <input type="text" id="D2" class="inline-input"> at the hotel.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">3</span> I asked the taxi driver to <i class="text-slate-500">let me get out</i> <input type="text" id="D3" class="inline-input"> outside the train station.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">4</span> Oh, no! I've forgotten my passport! We'll have to <i class="text-slate-500">go back</i> <input type="text" id="D4" class="inline-input"> and get it!</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">5</span> The most exciting moment is when the plane <i class="text-slate-500">leaves the ground</i> <input type="text" id="D5" class="inline-input"> .</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">6</span> Stop the car! I think we've <i class="text-slate-500">hit</i> <input type="text" id="D6" class="inline-input"> a dog.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">7</span> I don't think a horse can ever <i class="text-slate-500">stay at the same speed as</i> <input type="text" id="D7" class="inline-input"> a car.</div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI E ================= -->
+        <div id="ex-e" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">E</span> Write one word in each gap.</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4 text-lg leading-loose">
+                <div><span class="text-blue-600 font-bold w-6 inline-block">1</span> The speed <input type="text" id="E1" class="inline-input w-24"> in towns is 50 km/h and you shouldn't go faster than that.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">2</span> Why don't we <input type="text" id="E2" class="inline-input w-24"> the scenic route along the coast?</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">3</span> If you buy your plane ticket <input type="text" id="E3" class="inline-input w-24"> advance, it's often cheaper than if you wait.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">4</span> I can't remember the name of the hotel we stayed at off the <input type="text" id="E4" class="inline-input w-24"> of my head.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">5</span> I'm sorry I'm late! I <input type="text" id="E5" class="inline-input w-24"> my way and had to ask for directions.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">6</span> My mum's away in Germany on a business <input type="text" id="E6" class="inline-input w-24"> at the moment.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">7</span> The bank? Well, turn left here, then go <input type="text" id="E7" class="inline-input w-24"> ahead for a kilometre and it's on the left.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">8</span> If you look on your left-hand <input type="text" id="E8" class="inline-input w-24"> as we turn this corner, you'll see Big Ben.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">9</span> I'll look round the shops in the morning and then <input type="text" id="E9" class="inline-input w-24"> sightseeing in the afternoon.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">10</span> My grandma hasn't driven since she <input type="text" id="E10" class="inline-input w-24"> an accident last year.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">11</span> I love visiting foreign places, <input type="text" id="E11" class="inline-input w-24"> the sights and learning about other cultures.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">12</span> During the 70s, many British people started to go <input type="text" id="E12" class="inline-input w-24"> holiday to Spain.</div>
+                <div class="border-t border-slate-100 pt-2"><span class="text-blue-600 font-bold w-6 inline-block">13</span> While you're in London, you should take a tour <input type="text" id="E13" class="inline-input w-24"> the Houses of Parliament.</div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI F ================= -->
+        <div id="ex-f" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">F</span> Choose the correct answer.</h2>
+            <script>
+                renderRadios('F1', 'I\'ve always dreamt ................. China.', ['to visit', 'of visiting', 'I visit', 'visit']);
+                renderRadios('F2', 'The travel agency is arranging for us ................. at a really nice hotel.', ['stay', 'of staying', 'to stay', 'staying']);
+                renderRadios('F3', 'My dad says he always regrets ................. more.', ['not travelling', 'not travel', 'he not travel', 'of not travelling']);
+                renderRadios('F4', 'John seems keen ................. how to drive as soon as he can.', ['of learning', 'he learn', 'for learn', 'to learn']);
+                renderRadios('F5', 'Now, class, I\'d like you all to write ................. a description of your last holiday.', ['me', 'to me', 'it me', 'about me']);
+                renderRadios('F6', 'When you arrive ................. , have your passport ready.', ['to the airport', 'in the airport', 'on the airport', 'at the airport']);
+                renderRadios('F7', 'The Joneses have invited us ................. to Australia with them this summer.', ['going', 'for going', 'about going', 'to go']);
+                renderRadios('F8', 'The in-flight entertainment may differ ................. that advertised.', ['to', 'from', 'in', 'at']);
+            </script>
+        </div>
+
+        <!-- ================= BÀI G ================= -->
+        <div id="ex-g" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">G</span> Find the extra word in each line.</h2>
+            <div class="bg-yellow-50 p-8 rounded-xl shadow-inner border border-yellow-200" style="font-family: 'Comic Sans MS', cursive, sans-serif;">
+                <h3 class="text-xl font-bold text-center mb-6">The cancelled trip</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">1</span>
+                            <input type="text" id="G1" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>Oh, let me tell you about our trip. Did you know that Sara is afraid of be</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">2</span>
+                            <input type="text" id="G2" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>flying? We had arranged it with her family to go to France for a few days.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">3</span>
+                            <input type="text" id="G3" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>I have always wanted to see Paris and would love to live in there one day.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">4</span>
+                            <input type="text" id="G4" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>Well, we got to the airport and Sara appeared being nervous. I asked her if</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">5</span>
+                            <input type="text" id="G5" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>she was okay and she said she was fine, so we continued on to our way.</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">6</span>
+                            <input type="text" id="G6" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>We went through passport control and I could see so that Sara wasn't</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">7</span>
+                            <input type="text" id="G7" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>keen on going any further. Just then, a voice announced: 'We regret it to</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">8</span>
+                            <input type="text" id="G8" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>inform passengers that Flight 114 to France is been cancelled.' That was</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">9</span>
+                            <input type="text" id="G9" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>our flight! Sarah said she was glad because of she was too frightened to</p>
+                    </div>
+                    <div class="flex flex-col md:flex-row md:items-center gap-2">
+                        <div class="flex items-center w-full md:w-32 shrink-0">
+                            <span class="w-6 text-slate-500 font-bold">10</span>
+                            <input type="text" id="G10" class="inline-input flex-1 !border-b-yellow-400 !bg-white">
+                        </div>
+                        <p>fly anyway! So, we all went to home. That was the end of that trip!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= BÀI H ================= -->
+        <div id="ex-h" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">H</span> Use the word given in capitals at the end of each line to form a word that fits in the gap.</h2>
+            <div class="bg-slate-50 p-8 rounded-xl shadow-inner border border-slate-200">
+                <p class="leading-loose text-lg text-slate-700">
+                    It's not always easy being a (1) <input type="text" id="H1" class="inline-input" placeholder="TOUR">. 
+                    You spend half your time making (2) <input type="text" id="H2" class="inline-input" placeholder="ARRANGE"> for your holiday 
+                    and the other half worrying about sticking to the (3) <input type="text" id="H3" class="inline-input" placeholder="TIME">. 
+                    I think it's relaxing sometimes to spend a holiday at home. There are no (4) <input type="text" id="H4" class="inline-input" placeholder="CULTURE"> 
+                    problems, you don't need someone to be the (5) <input type="text" id="H5" class="inline-input" placeholder="PHOTOGRAPH"> 
+                    and you know that the local (6) <input type="text" id="H6" class="inline-input" placeholder="INHABIT"> are always friendly!
+                </p>
+            </div>
+        </div>
+
+        <!-- ================= BÀI I ================= -->
+        <div id="ex-i" class="content-section">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 flex items-center"><span class="bg-blue-800 text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3">I</span> Complete the sentences by changing the form of the word in capitals.</h2>
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-6 text-lg leading-loose">
+                <div><span class="text-blue-600 font-bold w-6 inline-block">1</span> Beijing has changed so much in the last few years that it's almost <input type="text" id="I1" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(RECOGNISE)</span>.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">2</span> The number of cars <input type="text" id="I2" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(WORLD)</span> is about a billion and is increasing all the time.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">3</span> The new maglev trains run on a completely <input type="text" id="I3" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(DIFFER)</span> system from ordinary trains.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">4</span> Living in a foreign country really does <input type="text" id="I4" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(BROAD)</span> your horizons.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">5</span> I can't find a <input type="text" id="I5" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(DIRECT)</span> flight from London to Delhi so I've booked one that changes in Frankfurt.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">6</span> All passengers must complete a visa form upon <input type="text" id="I6" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(ARRIVE)</span> at Singapore airport.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">7</span> You can still see old milestones by the side of the road in England, showing the <input type="text" id="I7" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(DISTANT)</span> to the nearest town.</div>
+                <div class="border-t border-slate-100 pt-4"><span class="text-blue-600 font-bold w-6 inline-block">8</span> The Museum of Transport has a full-sized jet plane next to the <input type="text" id="I8" class="inline-input"> <span class="font-bold text-slate-400 text-sm">(ENTER)</span>.</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Thông báo góc màn hình -->
+    <div id="toast" class="bg-gray-800 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 text-lg font-medium">
+        <i class="fa-solid fa-circle-check text-green-400 text-2xl"></i>
+        <span id="toast-message">Đã lưu tiến độ làm bài!</span>
+    </div>
+
+    <!-- JAVASCRIPT: Logic hệ thống -->
+    <script>
+        // === 1. TỪ ĐIỂN ĐÁP ÁN FULL ===
+        const correctAnswers = {
+            // Bài A (Radio)
+            A1: 'C', A2: 'D', A3: 'C', A4: 'A', A5: 'B', A6: 'C', 
+            A7: 'B', A8: 'D', A9: 'C', A10: 'D', A11: 'A', A12: 'C',
+            // Bài B (Select)
+            B1: 'world', B2: 'area', B3: 'guide', B4: 'fare', B5: 'voyage', B6: 'fee', B7: 'sight',
+            // Bài C (Input)
+            C1: 'see', C2: 'make', C3: 'check', C4: 'pull', C5: 'picks', C6: 'gone', C7: 'catch', C8: 'get',
+            // Bài D (Input)
+            D1: 'set off', /* or set out */ D2: 'checked in', D3: 'drop me off', D4: 'turn round', /* or get back */ D5: 'takes off', D6: 'run over', D7: 'keep up with',
+            // Bài E (Input)
+            E1: 'limit', E2: 'take', E3: 'in', E4: 'top', E5: 'lost', E6: 'trip', E7: 'straight', E8: 'side', E9: 'go', E10: 'had', E11: 'seeing', E12: 'on', E13: 'of',
+            // Bài F (Radio)
+            F1: 'B', F2: 'C', F3: 'A', F4: 'D', F5: 'A', F6: 'D', F7: 'D', F8: 'B',
+            // Bài G (Input extra word)
+            G1: 'be', G2: 'it', G3: 'in', G4: 'being', G5: 'to', G6: 'so', G7: 'it', G8: 'been', G9: 'of', G10: 'to',
+            // Bài H (Input)
+            H1: 'tourist', H2: 'arrangements', H3: 'timetable', H4: 'cultural', H5: 'photographer', H6: 'inhabitants',
+            // Bài I (Input)
+            I1: 'unrecognisable', I2: 'worldwide', I3: 'different', I4: 'broaden', I5: 'direct', I6: 'arrival', I7: 'distance', I8: 'entrance'
+        };
+
+        // Chấp nhận nhiều đáp án đúng (ví dụ set off hoặc set out)
+        const alternateAnswers = {
+            D1: ['set off', 'set out'],
+            D4: ['turn round', 'get back']
+        };
+
+        // === 2. CHUYỂN TAB ===
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active', 'text-blue-600', 'font-bold');
+                btn.classList.add('text-slate-500');
+                btn.style.borderBottom = "none";
+                btn.style.backgroundColor = "transparent";
+            });
+            const activeBtn = document.querySelector(`.tab-btn[data-target="${tabId}"]`);
+            activeBtn.classList.add('active', 'text-blue-600');
+            activeBtn.classList.remove('text-slate-500');
+            activeBtn.style.borderBottom = "3px solid #2563eb";
+            activeBtn.style.backgroundColor = "#eff6ff";
+
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // === 3. CHẤM ĐIỂM THÔNG MINH ===
+        function checkAnswers() {
+            let correctCount = 0;
+            let totalChecked = 0;
+
+            // Xóa class cũ
+            document.querySelectorAll('.is-correct-radio, .is-incorrect-radio, .is-correct-input, .is-incorrect-input, .correct-hint-border').forEach(el => {
+                el.classList.remove('is-correct-radio', 'is-incorrect-radio', 'is-correct-input', 'is-incorrect-input', 'correct-hint-border');
+            });
+
+            // Duyệt qua toàn bộ keys trong correctAnswers
+            for (let qID in correctAnswers) {
+                let correctAnswer = correctAnswers[qID];
+                
+                // Trường hợp câu hỏi là dạng Trắc nghiệm (Radio - Bài A, F)
+                if (qID.startsWith('A') || qID.startsWith('F')) {
+                    let selected = document.querySelector(`input[name="${qID}"]:checked`);
+                    let correctLabel = document.querySelector(`label[for="${qID}_${correctAnswer}"]`);
+                    
+                    if (correctLabel) correctLabel.classList.add('correct-hint-border'); // Hiển thị khung nét đứt chỉ đáp án chuẩn
+
+                    if (selected) {
+                        totalChecked++;
+                        if (selected.value === correctAnswer) {
+                            selected.classList.add('is-correct-radio');
+                            correctCount++;
+                        } else {
+                            selected.classList.add('is-incorrect-radio');
+                        }
+                    }
+                } 
+                // Trường hợp là Điền từ / Chọn từ (Input text, Select - Bài B, C, D, E, G, H, I)
+                else {
+                    let el = document.getElementById(qID);
+                    if (el && el.value.trim() !== "") {
+                        totalChecked++;
+                        let userAns = el.value.trim().toLowerCase().replace(/\s+/g, ' '); // Chuẩn hóa chuỗi nhập
+                        
+                        // Kiểm tra xem có trong danh sách đáp án thay thế không
+                        let isCorrect = (userAns === correctAnswer.toLowerCase());
+                        if(alternateAnswers[qID] && alternateAnswers[qID].includes(userAns)){
+                            isCorrect = true;
+                        }
+
+                        if (isCorrect) {
+                            el.classList.add('is-correct-input');
+                            correctCount++;
+                        } else {
+                            el.classList.add('is-incorrect-input');
+                        }
+                    }
+                }
+            }
+
+            // Hiển thị thông báo kết quả
+            if (totalChecked === 0) {
+                showToast("Bạn chưa làm câu nào cả!", "bg-amber-500", "fa-circle-exclamation");
+            } else {
+                let percentage = Math.round((correctCount / totalChecked) * 100);
+                let color = percentage >= 80 ? "bg-green-600" : (percentage >= 50 ? "bg-blue-600" : "bg-red-500");
+                showToast(`Tuyệt vời! Bạn đúng ${correctCount}/${totalChecked} câu đã làm. (${percentage}%)`, color, "fa-star");
+            }
+        }
+
+        // === 4. LƯU TIẾN ĐỘ VÀO TRÌNH DUYỆT ===
+        function saveProgress() {
+            const data = {};
+            // Lưu toàn bộ Radio, Select, Input Text
+            document.querySelectorAll('input[type="radio"]:checked, select.inline-select, input[type="text"].inline-input').forEach(el => {
+                if (el.type === 'radio') data[el.name] = el.value;
+                else data[el.id] = el.value;
+            });
+
+            localStorage.setItem('destB2_Unit2_FullData', JSON.stringify(data));
+            showToast("Đã lưu tiến độ làm bài thành công!", "bg-gray-800", "fa-floppy-disk");
+        }
+
+        function loadProgress() {
+            const savedData = localStorage.getItem('destB2_Unit2_FullData');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                for (let key in data) {
+                    if (key.startsWith('A') || key.startsWith('F')) {
+                        let radio = document.querySelector(`input[name="${key}"][value="${data[key]}"]`);
+                        if (radio) radio.checked = true;
+                    } else {
+                        let el = document.getElementById(key);
+                        if (el) el.value = data[key];
+                    }
+                }
+            }
+        }
+
+        // === 5. TIỆN ÍCH THÔNG BÁO TÙY CHỈNH ===
+        function showToast(message, bgColorClass = "bg-gray-800", iconClass = "fa-circle-check") {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            const iconEl = toast.querySelector('i');
+            
+            toast.className = `text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 text-lg font-medium ${bgColorClass}`;
+            iconEl.className = `fa-solid ${iconClass} text-2xl ${bgColorClass === 'bg-gray-800' ? 'text-green-400' : 'text-white'}`;
+            msgEl.textContent = message;
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // Tự động xóa viền sai/đúng khi người dùng tương tác lại
+        document.addEventListener('change', function(e) {
+            if(e.target.type === 'radio') {
+                let qName = e.target.name;
+                document.querySelectorAll(`input[name="${qName}"]`).forEach(r => r.classList.remove('is-correct-radio', 'is-incorrect-radio'));
+                document.querySelectorAll(`label[for^="${qName}_"]`).forEach(lbl => lbl.classList.remove('correct-hint-border'));
+            }
+        });
+        document.addEventListener('input', function(e) {
+            if(e.target.classList.contains('inline-input') || e.target.classList.contains('inline-select')) {
+                e.target.classList.remove('is-correct-input', 'is-incorrect-input');
+            }
+        });
+
+        // Load data khi vừa mở trang
+        window.onload = loadProgress;
+
+    </script>
+</body>
+</html>
