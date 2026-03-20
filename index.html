@@ -345,7 +345,7 @@
         </div>
     </div>
 
-    <!-- 🌟 AUTH MODAL -->
+    <!-- 🌟 AUTH MODAL (ĐÃ ĐƯỢC CẢI TIẾN) -->
     <div id="authModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 modal-overlay">
         <div class="bg-white w-full max-w-[420px] rounded-[2rem] shadow-2xl overflow-hidden fade-in relative border border-gray-100">
             <button onclick="closeModal('authModal')" class="absolute top-5 right-5 text-gray-400 hover:text-gray-900 transition p-2 bg-gray-50 hover:bg-gray-100 rounded-full">
@@ -374,6 +374,14 @@
                     <button type="submit" id="auth-submit-btn" class="w-full bg-gray-900 text-white py-3.5 rounded-xl font-bold text-base hover:bg-primary-600 transition-colors flex justify-center items-center gap-2 mt-2">
                         Đăng nhập
                     </button>
+                    
+                    <!-- Chuyển đổi Đăng nhập / Đăng ký -->
+                    <div class="text-center mt-3">
+                        <p class="text-sm font-medium text-gray-600" id="auth-toggle-text">
+                            Chưa có tài khoản? 
+                            <button type="button" onclick="toggleAuthMode()" class="text-primary-600 font-bold hover:underline transition">Đăng ký ngay</button>
+                        </p>
+                    </div>
                 </form>
 
                 <div class="relative my-6">
@@ -440,11 +448,11 @@
             search: '',
             displayLimit: 9,
             viewMode: 'grid',
-            isLoginMode: true
+            isLoginMode: true // Mặc định là mode Đăng nhập
         };
 
         window.userProgress = {};
-        window.userSchedule = Array(7).fill(null); // Lưu lịch 7 ngày
+        window.userSchedule = Array(7).fill(null);
 
         const baseExams = [
             { id: 1, subject: 'anh', title: 'Đề thi thử vào 10 THPT Sóc Sơn - Lần 1 (Năm 2026)', desc: 'Bám sát cấu trúc đề thi chính thức Sở GD&ĐT Hà Nội.', time: '60 phút', questions: '40 câu', participants: 1245, difficulty: 'medium', img: 'https://images.unsplash.com/photo-1546410531-bea5aadcb6ce?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Mới nhất', color: 'bg-rose-500'}], bookmarked: false },
@@ -473,15 +481,14 @@
             toast.className = `bg-white px-5 py-4 rounded-2xl shadow-premium border border-gray-100 flex items-center gap-3 toast-enter pointer-events-auto min-w-[300px] mb-2`;
             toast.innerHTML = `${icons[type]}<span class="font-bold text-gray-800 text-sm">${message}</span><button onclick="this.parentElement.remove()" class="ml-auto text-gray-400 hover:text-gray-900"><i class="fa-solid fa-xmark"></i></button>`;
             container.appendChild(toast);
-            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 3000);
+            setTimeout(() => { toast.classList.replace('toast-enter', 'toast-leave'); setTimeout(() => toast.remove(), 400); }, 4000);
         };
 
-        // --- FIREBASE AUTH ---
+        // --- FIREBASE AUTH LOGIC TỐI ƯU HƠN ---
         onAuthStateChanged(auth, (user) => {
             window.state.user = user;
             if(user) {
                 window.userProgress = loadUserProgress(user.uid);
-                // Load user custom schedule
                 const sd = localStorage.getItem('aces_schedule_' + user.uid);
                 if (sd) window.userSchedule = JSON.parse(sd);
                 else window.userSchedule = Array(7).fill(null);
@@ -500,7 +507,7 @@
             
             if (window.state.user) {
                 const isAnonymous = window.state.user.isAnonymous;
-                const displayName = isAnonymous ? "Khách" : (window.state.user.displayName || window.state.user.email.split('@')[0]);
+                const displayName = isAnonymous ? "Khách (Học thử)" : (window.state.user.displayName || window.state.user.email.split('@')[0]);
                 const photoURL = isAnonymous ? "https://ui-avatars.com/api/?name=Guest&background=10b981&color=fff&bold=true" : (window.state.user.photoURL || `https://ui-avatars.com/api/?name=${displayName}&background=4f46e5&color=fff&bold=true`);
                 
                 authSection.innerHTML = `
@@ -508,7 +515,7 @@
                         <img src="${photoURL}" alt="Avatar" class="w-8 h-8 rounded-full shadow-sm">
                         <span class="text-sm font-bold text-gray-700 max-w-[120px] truncate">${displayName}</span>
                         <div class="w-px h-4 bg-gray-300 mx-1"></div>
-                        <button onclick="logout()" class="px-2 py-1 text-gray-500 hover:text-gray-900 transition-colors" title="Đăng xuất"><i class="fa-solid fa-power-off"></i></button>
+                        <button onclick="logout()" class="px-2 py-1 text-gray-500 hover:text-rose-500 transition-colors" title="Đăng xuất"><i class="fa-solid fa-power-off"></i></button>
                     </div>
                 `;
                 progressBtn.classList.replace('hidden', 'flex');
@@ -518,25 +525,120 @@
             }
         }
 
+        // --- CÁC HÀM XỬ LÝ AUTHENTICATION ---
+
+        // Hàm thay đổi trạng thái UI Đăng nhập / Đăng ký
+        window.toggleAuthMode = () => {
+            window.state.isLoginMode = !window.state.isLoginMode;
+            
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const btn = document.getElementById('auth-submit-btn');
+            const toggleText = document.getElementById('auth-toggle-text');
+            const alertBox = document.getElementById('auth-alert');
+            
+            alertBox.classList.add('hidden'); // Ẩn thông báo lỗi khi chuyển tab
+
+            if (window.state.isLoginMode) {
+                title.innerText = "Chào mừng trở lại";
+                subtitle.innerText = "Đăng nhập để tiếp tục học tập";
+                btn.innerHTML = "Đăng nhập";
+                toggleText.innerHTML = `Chưa có tài khoản? <button type="button" onclick="toggleAuthMode()" class="text-primary-600 font-bold hover:underline transition">Đăng ký ngay</button>`;
+            } else {
+                title.innerText = "Tạo tài khoản mới";
+                subtitle.innerText = "Bắt đầu hành trình chinh phục điểm 9+";
+                btn.innerHTML = "Đăng ký";
+                toggleText.innerHTML = `Đã có tài khoản? <button type="button" onclick="toggleAuthMode()" class="text-primary-600 font-bold hover:underline transition">Đăng nhập ngay</button>`;
+            }
+        };
+
         window.submitAuth = async (e) => {
             e.preventDefault();
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
             const btn = document.getElementById('auth-submit-btn');
-            btn.disabled = true; btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...`;
+            const alertBox = document.getElementById('auth-alert');
+            
+            btn.disabled = true; 
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...`;
+            alertBox.classList.add('hidden');
+
             try {
-                if (window.state.isLoginMode) await signInWithEmailAndPassword(auth, email, password);
-                else await createUserWithEmailAndPassword(auth, email, password);
-                closeModal('authModal'); showToast("Thành công!");
-            } catch (error) { document.getElementById('auth-alert').innerText = "Thất bại. Vui lòng kiểm tra lại."; document.getElementById('auth-alert').classList.remove('hidden'); }
-            finally { btn.disabled = false; btn.innerText = window.state.isLoginMode ? "Đăng nhập" : "Đăng ký"; }
+                if (window.state.isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast("Đăng nhập thành công!");
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showToast("Đăng ký tài khoản thành công!");
+                }
+                closeModal('authModal');
+                // Reset form
+                document.getElementById('auth-email').value = '';
+                document.getElementById('auth-password').value = '';
+            } catch (error) { 
+                console.error(error); // Log ra console để bạn dễ debug
+                let errorMsg = "Lỗi không xác định.";
+                if(error.code === 'auth/email-already-in-use') errorMsg = "Email này đã được sử dụng!";
+                else if(error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') errorMsg = "Sai email hoặc mật khẩu!";
+                else if(error.code === 'auth/weak-password') errorMsg = "Mật khẩu quá yếu (cần tối thiểu 6 ký tự).";
+                
+                alertBox.innerText = errorMsg; 
+                alertBox.classList.remove('hidden'); 
+            } finally { 
+                btn.disabled = false; 
+                btn.innerText = window.state.isLoginMode ? "Đăng nhập" : "Đăng ký"; 
+            }
         };
-        window.googleSignIn = async () => { try { await signInWithPopup(auth, googleProvider); closeModal('authModal'); showToast("Đăng nhập Google thành công!"); } catch (e) {} };
-        window.guestSignIn = async () => { try { await signInAnonymously(auth); closeModal('authModal'); } catch (e) {} };
-        window.logout = async () => { await signOut(auth); };
+
+        // Fix lỗi cho phần Đăng nhập Google và Guest
+        window.googleSignIn = async () => { 
+            try { 
+                await signInWithPopup(auth, googleProvider); 
+                closeModal('authModal'); 
+                showToast("Đăng nhập bằng Google thành công!"); 
+            } catch (error) {
+                console.error("Google Auth Error:", error);
+                const alertBox = document.getElementById('auth-alert');
+                
+                let errorMsg = "Lỗi đăng nhập Google.";
+                if(error.code === 'auth/unauthorized-domain') {
+                    errorMsg = "Lỗi: Tên miền này chưa được thêm vào mục Authorized domains trong Firebase Console.";
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    errorMsg = "Bạn đã đóng cửa sổ đăng nhập.";
+                }
+                alertBox.innerText = errorMsg;
+                alertBox.classList.remove('hidden');
+            } 
+        };
+
+        window.guestSignIn = async () => { 
+            try { 
+                await signInAnonymously(auth); 
+                closeModal('authModal'); 
+                showToast("Bắt đầu học thử bằng tài khoản Khách!");
+            } catch (error) {
+                console.error("Guest Auth Error:", error);
+                const alertBox = document.getElementById('auth-alert');
+                
+                if(error.code === 'auth/operation-not-allowed') {
+                    alertBox.innerText = "Lỗi: Bạn chưa bật tính năng 'Anonymous' (Khách) trong Firebase Authentication.";
+                } else {
+                    alertBox.innerText = "Lỗi đăng nhập Khách: " + error.message;
+                }
+                alertBox.classList.remove('hidden');
+            } 
+        };
+
+        window.logout = async () => { 
+            await signOut(auth); 
+            showToast("Đã đăng xuất thành công!", "info");
+        };
 
         window.openModal = (id) => document.getElementById(id).classList.remove('hidden');
-        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+        window.closeModal = (id) => {
+            document.getElementById(id).classList.add('hidden');
+            if(id === 'authModal') document.getElementById('auth-alert').classList.add('hidden');
+        };
 
         // --- EXAM RENDERER ---
         const ExamCard = (exam, index) => {
@@ -698,7 +800,7 @@
             openModal('progressModal');
         };
 
-        // --- MANUAL SCHEDULE GENERATOR (MỚI TÙY CHỈNH) ---
+        // --- MANUAL SCHEDULE GENERATOR ---
         const DAYS_OF_WEEK = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'];
         
         window.renderSchedule = () => {
@@ -710,7 +812,6 @@
                 const dayName = DAYS_OF_WEEK[i];
                 
                 if (dayData) {
-                    // Đã có lịch
                     const conf = SUBJECT_CONFIG[dayData.subject];
                     html += `
                         <div onclick="openScheduleModal(${i})" class="bg-white border ${conf.borderCls} shadow-sm rounded-2xl p-5 flex flex-col min-h-[160px] cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all relative overflow-hidden group">
@@ -728,7 +829,6 @@
                         </div>
                     `;
                 } else {
-                    // Chưa có lịch
                     html += `
                         <div onclick="openScheduleModal(${i})" class="border-2 border-dashed border-gray-200 text-gray-400 hover:border-primary-400 hover:text-primary-500 hover:bg-primary-50 transition-all cursor-pointer rounded-2xl flex flex-col items-center justify-center min-h-[160px] p-4 text-center group">
                             <span class="font-black text-sm uppercase mb-2 group-hover:text-primary-400 opacity-60">${dayName}</span>
@@ -801,7 +901,6 @@
             document.getElementById('page-' + tabId).classList.remove('hidden');
             window.scrollTo(0, 0);
             
-            // Re-render schedule if tab is active to ensure UI is fresh
             if(tabId === 'thoigianbieu') renderSchedule();
         };
         
