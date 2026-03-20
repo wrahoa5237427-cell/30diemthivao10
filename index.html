@@ -439,23 +439,20 @@
         };
 
         // --- DATABASE ĐỀ THI (ID KHỚP DATA.JS) ---
-        const allExams = [
-            { id: 'eng-soc-son-108', subject: 'anh', title: 'Đề thi thử vào 10 THPT Sóc Sơn - Lần 1', desc: 'Bám sát cấu trúc đề minh họa 2026 của Sở GD&ĐT Hà Nội.', time: '60 phút', questions: '40 câu', difficulty: 'medium', img: 'https://images.unsplash.com/photo-1546410531-bea5aadcb6ce?q=80&w=800&auto=format&fit=crop' },
-            { id: 'chuyen-ngu-201', subject: 'anh', title: 'Đề thi Tiếng Anh Chuyên Ngoại Ngữ', desc: 'Dành cho học sinh ôn thi khối chuyên, độ khó cao.', time: '90 phút', questions: '60 câu', difficulty: 'hard', img: 'https://images.unsplash.com/photo-1513001900722-370f803f498d?q=80&w=800&auto=format&fit=crop' },
-
         window.userProgress = {};
         window.userSchedule = Array(7).fill(null); // Lưu lịch 7 ngày
 
         const baseExams = [
-            { id: "eng-soc-son-108", subject: 'anh', title: 'Đề thi thử vào 10 THPT Sóc Sơn - Lần 1 (Năm 2026)', desc: 'Bám sát cấu trúc đề thi chính thức Sở GD&ĐT Hà Nội.', time: '60 phút', questions: '40 câu', participants: 1245, difficulty: 'medium', img: 'https://images.unsplash.com/photo-1546410531-bea5aadcb6ce?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Mới nhất', color: 'bg-rose-500'}], bookmarked: false },
-            { id: 2, subject: 'toan', title: 'Đề thi thử Chuyên Sư phạm - Lần 1', desc: 'Đề điều kiện vòng 1 dành cho mọi thí sinh thi vào khối chuyên.', time: '120 phút', questions: '5 bài tập', participants: 856, difficulty: 'hard', img: 'https://images.unsplash.com/photo-1632559646285-b9f12347ebbc?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Chuyên', color: 'bg-indigo-600'}], bookmarked: true },
-            { id: 3, subject: 'van', title: 'Đề thi thử THPT Quốc học Huế', desc: 'Phần đọc hiểu văn bản ngoài chương trình và nghị luận thực tiễn.', time: '120 phút', questions: 'Tự luận', participants: 432, difficulty: 'medium', img: 'https://images.unsplash.com/photo-1455390582262-044cdead27d8?q=80&w=800&auto=format&fit=crop', tags: [], bookmarked: false },
-            { id: 4, subject: 'toan', title: 'Khảo sát chất lượng - THPT Chu Văn An', desc: 'Tập trung phân loại phần hình học không gian.', time: '120 phút', questions: '5 bài tập', participants: 2100, difficulty: 'hard', img: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Đề khó', color: 'bg-amber-500'}], bookmarked: false },
-            { id: 5, subject: 'anh', title: 'Đề thi Tiếng Anh Chuyên Ngoại Ngữ (Vòng 2)', desc: 'Đề chuyên sâu yêu cầu vốn từ vựng phong phú.', time: '90 phút', questions: '80 câu', participants: 1560, difficulty: 'hard', img: 'https://images.unsplash.com/photo-1513001900722-370f803f498d?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Chuyên', color: 'bg-indigo-600'}], bookmarked: true },
-            { id: 6, subject: 'van', title: 'Đề thi thử Ngữ Văn Sở GD&ĐT TP. HCM', desc: 'Cấu trúc đề mở, chú trọng khả năng cảm thụ văn học.', time: '120 phút', questions: 'Tự luận', participants: 3200, difficulty: 'easy', img: 'https://images.unsplash.com/photo-1474932430478-367d16b99031?q=80&w=800&auto=format&fit=crop', tags: [{text: 'Hot', color: 'bg-rose-500'}], bookmarked: false }
+            { id: "eng-soc-son-108", subject: 'anh', title: 'Đề thi thử vào 10 THPT Sóc Sơn - Lần 1 (Năm 2026)', desc: 'Bám sát cấu trúc đề thi chính thức Sở GD&ĐT Hà Nội.', time: '60 phút', questions: '40 câu', difficulty: 'medium', img: 'https://images.unsplash.com/photo-1546410531-bea5aadcb6ce?q=80&w=800&auto=format&fit=crop' },
+            { id: "chuyen-ngu-201", subject: 'anh', title: 'Đề thi Tiếng Anh Chuyên Ngoại Ngữ', desc: 'Đề chuyên sâu yêu cầu vốn từ vựng phong phú.', time: '90 phút', questions: '60 câu', difficulty: 'hard', img: 'https://images.unsplash.com/photo-1513001900722-370f803f498d?q=80&w=800&auto=format&fit=crop' },
+            { id: "toan-csp-1", subject: 'toan', title: 'Đề thi thử Chuyên Sư phạm - Lần 1', desc: 'Đề điều kiện vòng 1 dành cho mọi thí sinh thi vào khối chuyên.', time: '120 phút', questions: '5 bài tập', difficulty: 'hard', img: 'https://images.unsplash.com/photo-1632559646285-b9f12347ebbc?q=80&w=800&auto=format&fit=crop' },
+            { id: "toan-cva-1", subject: 'toan', title: 'Khảo sát chất lượng - THPT Chu Văn An', desc: 'Tập trung phân loại phần hình học không gian.', time: '120 phút', questions: '5 bài tập', difficulty: 'hard', img: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=800&auto=format&fit=crop' },
+            { id: "van-qh-1", subject: 'van', title: 'Đề thi thử THPT Quốc học Huế', desc: 'Phần đọc hiểu văn bản ngoài chương trình và nghị luận thực tiễn.', time: '120 phút', questions: 'Tự luận', difficulty: 'medium', img: 'https://images.unsplash.com/photo-1455390582262-044cdead27d8?q=80&w=800&auto=format&fit=crop' },
+            { id: "van-hcm-1", subject: 'van', title: 'Đề thi thử Ngữ Văn Sở GD&ĐT TP. HCM', desc: 'Cấu trúc đề mở, chú trọng khả năng cảm thụ văn học.', time: '120 phút', questions: 'Tự luận', difficulty: 'easy', img: 'https://images.unsplash.com/photo-1474932430478-367d16b99031?q=80&w=800&auto=format&fit=crop' }
         ];
 
-        const allExams = [...baseExams, ...baseExams.map(e => ({...e, id: e.id + 6, title: e.title + ' (Đợt 2)'}))];
+        // Nhân đôi đề thi để làm mẫu (Đợt 2)
+        const allExams = [...baseExams, ...baseExams.map(e => ({...e, id: e.id + '-dot-2', title: e.title + ' (Đợt 2)'}))];
 
         function loadUserProgress(userId) {
             const data = localStorage.getItem('aces_progress_' + userId);
