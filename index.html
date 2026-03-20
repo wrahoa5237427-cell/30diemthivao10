@@ -435,13 +435,13 @@
         };
 
         window.state = {
-            user: null,
-            filter: 'all',
-            search: '',
-            displayLimit: 9,
-            viewMode: 'grid',
-            isLoginMode: true
+            user: null, filter: 'all', search: '', displayLimit: 9, viewMode: 'grid', userProgress: {}
         };
+
+        // --- DATABASE ĐỀ THI (ID KHỚP DATA.JS) ---
+        const allExams = [
+            { id: 'eng-soc-son-108', subject: 'anh', title: 'Đề thi thử vào 10 THPT Sóc Sơn - Lần 1', desc: 'Bám sát cấu trúc đề minh họa 2026 của Sở GD&ĐT Hà Nội.', time: '60 phút', questions: '40 câu', difficulty: 'medium', img: 'https://images.unsplash.com/photo-1546410531-bea5aadcb6ce?q=80&w=800&auto=format&fit=crop' },
+            { id: 'chuyen-ngu-201', subject: 'anh', title: 'Đề thi Tiếng Anh Chuyên Ngoại Ngữ', desc: 'Dành cho học sinh ôn thi khối chuyên, độ khó cao.', time: '90 phút', questions: '60 câu', difficulty: 'hard', img: 'https://images.unsplash.com/photo-1513001900722-370f803f498d?q=80&w=800&auto=format&fit=crop' },
 
         window.userProgress = {};
         window.userSchedule = Array(7).fill(null); // Lưu lịch 7 ngày
@@ -654,7 +654,7 @@
         btn.innerHTML = originalHTML;
 
         // 👉 CHUYỂN TRANG (QUAN TRỌNG NHẤT)
-        window.location.href = `test.html?id=${examId}`;
+        window.location.href = `exam-room.html?id=${examId}`;
         
     }, 400);
 };
