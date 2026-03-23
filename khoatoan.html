@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học tập - Master Toán 9+ | ACES Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        primary: { 50: '#f5f3ff', 100: '#ede9fe', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9', 900: '#4c1d95' },
+                        math: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' },
+                        geo: { 50: '#f0fdfa', 100: '#ccfbf1', 500: '#14b8a6', 600: '#0d9488' } /* Màu cho Hình học */
+                    },
+                    boxShadow: {
+                        'premium': '0 4px 24px -6px rgba(0, 0, 0, 0.04), 0 12px 32px -4px rgba(0, 0, 0, 0.04)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #FAFAFA; }
+        .glass-nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #e2e8f0; border-radius: 20px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #cbd5e1; }
+        
+        .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, padding 0.3s ease; max-height: 0; opacity: 0; overflow: hidden; padding-top: 0; padding-bottom: 0; }
+        .accordion-content.open { max-height: 500px; opacity: 1; padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans text-gray-800 selection:bg-math-500 selection:text-white overflow-hidden">
+
+    <!-- NAVBAR TẬP TRUNG -->
+    <nav class="glass-nav fixed top-0 w-full z-50 h-16 flex items-center shadow-sm">
+        <div class="max-w-[1600px] w-full mx-auto px-4 sm:px-6 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-gray-500 hover:text-gray-900 transition flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div class="h-6 w-px bg-gray-200"></div>
+                <div class="flex flex-col leading-none">
+                    <span class="font-bold text-sm text-gray-900">Master Toán 9+ (Nước rút)</span>
+                    <span class="text-[11px] font-semibold text-math-600 mt-1">Giáo viên: Nguyễn Công Hoà</span>
+                </div>
+            </div>
+
+            <div class="hidden sm:flex items-center gap-4">
+                <div class="text-right">
+                    <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tổng tiến độ</div>
+                    <div class="text-sm font-black text-emerald-600" id="progress-text">0%</div>
+                </div>
+                <div class="w-32 h-2.5 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                    <div id="progress-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- KHU VỰC CHÍNH -->
+    <main class="flex-grow pt-16 h-screen flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
+        
+        <!-- TRÁI: VIDEO & NỘI DUNG BÀI HỌC -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8 flex flex-col">
+            
+            <!-- Trình phát Video -->
+            <div class="w-full bg-gray-900 rounded-3xl aspect-video relative overflow-hidden shadow-2xl group flex items-center justify-center border border-gray-800 shrink-0">
+                <img src="https://images.unsplash.com/photo-1632559646285-b88d752bd8ec?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-overlay">
+                
+                <button class="relative z-10 w-20 h-20 bg-white/10 text-white rounded-full flex items-center justify-center text-3xl shadow-lg hover:bg-math-600 hover:scale-110 transition-all backdrop-blur-md border border-white/20">
+                    <i class="fa-solid fa-play ml-1"></i>
+                </button>
+
+                <!-- Giả lập thanh điều khiển video -->
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-4 px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="h-1 w-full bg-white/30 rounded-full mb-4 cursor-pointer">
+                        <div class="h-full bg-math-500 rounded-full relative" style="width: 35%">
+                            <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow"></div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-white text-sm">
+                        <div class="flex items-center gap-4">
+                            <i class="fa-solid fa-pause cursor-pointer hover:text-math-400"></i>
+                            <i class="fa-solid fa-volume-high cursor-pointer hover:text-math-400"></i>
+                            <span class="font-medium text-xs">15:20 / 45:00</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <i class="fa-solid fa-gear cursor-pointer hover:text-math-400"></i>
+                            <i class="fa-solid fa-expand cursor-pointer hover:text-math-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiêu đề bài học đang chọn -->
+            <div class="mt-6 mb-2">
+                <div class="inline-block bg-math-100 text-math-700 text-[10px] font-bold uppercase px-2.5 py-1 rounded-md mb-2 shadow-sm border border-math-200" id="current-lesson-badge">
+                    <i class="fa-solid fa-divide mr-1"></i> Đại số - Buổi 2
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-gray-900" id="current-lesson-title">Hệ phương trình bậc nhất hai ẩn và Ứng dụng</h1>
+            </div>
+
+            <!-- Các Tab Nội dung -->
+            <div class="mt-4 bg-white rounded-[24px] border border-gray-100 shadow-sm p-6 flex-grow">
+                <div class="flex gap-6 border-b border-gray-100 pb-0 mb-6">
+                    <button class="font-bold text-math-600 border-b-2 border-math-600 pb-3 transition-all px-1">Tổng quan</button>
+                    <button class="font-bold text-gray-400 hover:text-gray-900 pb-3 transition-all px-1">Tài liệu đính kèm</button>
+                </div>
+
+                <div class="prose prose-blue max-w-none text-gray-600 text-sm">
+                    <p class="font-semibold text-base text-gray-800 mb-3">Nội dung trọng tâm:</p>
+                    <ul class="space-y-2 mb-6">
+                        <li><i class="fa-solid fa-bullseye text-math-500 mr-2"></i> Nắm vững phương pháp thế và phương pháp cộng đại số.</li>
+                        <li><i class="fa-solid fa-bullseye text-math-500 mr-2"></i> Kỹ năng lập hệ phương trình để giải bài toán thực tế (Chuyển động, Năng suất).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHẢI: SIDEBAR LỘ TRÌNH -->
+        <div class="w-full lg:w-[400px] xl:w-[450px] bg-white border-l border-gray-100 flex flex-col h-full lg:h-auto shrink-0 shadow-[-10px_0_30px_rgba(0,0,0,0.02)] relative z-10">
+            
+            <!-- Header Sidebar -->
+            <div class="p-6 pb-4 border-b border-gray-100 flex justify-between items-center bg-white shrink-0">
+                <h2 class="font-black text-lg text-gray-900">Lộ trình học tập</h2>
+                <span class="text-[11px] font-bold text-gray-500 bg-gray-100 px-3 py-1.5 rounded-md" id="track-lessons-count">0 Buổi</span>
+            </div>
+
+            <!-- TABS ĐẠI SỐ / HÌNH HỌC -->
+            <div class="px-6 py-3 bg-white border-b border-gray-100 shrink-0">
+                <div class="flex bg-gray-100 p-1 rounded-xl relative">
+                    <button onclick="switchTrack('daiso')" id="tab-daiso" class="flex-1 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-math-600 transition-all z-10">
+                        <i class="fa-solid fa-divide mr-1"></i> Đại Số
+                    </button>
+                    <button onclick="switchTrack('hinhhoc')" id="tab-hinhhoc" class="flex-1 py-2.5 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-900 transition-all z-10">
+                        <i class="fa-solid fa-drafting-compass mr-1"></i> Hình Học
+                    </button>
+                </div>
+            </div>
+
+            <!-- Danh sách bài học -->
+            <div class="overflow-y-auto custom-scrollbar flex-grow p-4 space-y-3 pb-24" id="curriculum-container">
+                <!-- Nội dung sẽ được JS bơm vào đây -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JAVASCRIPT: DATA & LOGIC -->
+    <script>
+        // 1. DATA: Thêm trường `track` (daiso hoặc hinhhoc)
+        const courseData = [
+            // --- TRACK: ĐẠI SỐ ---
+            {
+                id: 1,
+                track: "daiso",
+                sessionName: "Đại số - Buổi 1",
+                title: "Rút gọn biểu thức chứa căn và Câu hỏi phụ",
+                status: "completed",
+                items: [
+                    { type: "video", title: "Video: Lý thuyết trọng tâm", meta: "45:20", active: false },
+                    { type: "doc", title: "Tài liệu lý thuyết (PDF)", meta: "Tải xuống" },
+                    { type: "quiz", title: "BTVN: Dạng toán rút gọn", meta: "10/10", completed: true }
+                ]
+            },
+            {
+                id: 2,
+                track: "daiso",
+                sessionName: "Đại số - Buổi 2",
+                title: "Hệ phương trình bậc nhất hai ẩn và Ứng dụng",
+                status: "active",
+                items: [
+                    { type: "video", title: "Video: Giải toán bằng lập HPT", meta: "52:10", active: true },
+                    { type: "doc", title: "Ví dụ minh họa (PDF)", meta: "Tải xuống" },
+                    { type: "quiz", title: "BTVN: Dạng Chuyển động, Năng suất", meta: "Chưa làm", completed: false }
+                ]
+            },
+            {
+                id: 3, track: "daiso", sessionName: "Đại số - Buổi 3",
+                title: "Hàm số bậc nhất & Hàm số bậc hai (Parabol)", status: "locked",
+                items: [{ type: "video", title: "Video bài giảng", meta: "48:00" }, { type: "quiz", title: "BTVN", meta: "Khóa" }]
+            },
+            {
+                id: 4, track: "daiso", sessionName: "Đại số - Buổi 4",
+                title: "Phương trình bậc hai & Định lý Vi-ét", status: "locked", items: []
+            },
+            {
+                id: 5, track: "daiso", sessionName: "Đại số - Buổi 5",
+                title: "Bất đẳng thức & Cực trị đại số (Chốt 9+)", status: "locked", items: []
+            },
+
+            // --- TRACK: HÌNH HỌC ---
+            {
+                id: 6,
+                track: "hinhhoc",
+                sessionName: "Hình học - Buổi 1",
+                title: "Hệ thức lượng trong tam giác vuông",
+                status: "completed",
+                items: [
+                    { type: "video", title: "Video: Các hệ thức cơ bản", meta: "40:15", active: false },
+                    { type: "quiz", title: "BTVN: Áp dụng hệ thức", meta: "9/10", completed: true }
+                ]
+            },
+            {
+                id: 7,
+                track: "hinhhoc",
+                sessionName: "Hình học - Buổi 2",
+                title: "Hệ thống kiến thức Đường tròn cơ bản",
+                status: "active",
+                items: [
+                    { type: "video", title: "Video bài giảng", meta: "55:00", active: true },
+                    { type: "doc", title: "Sơ đồ tư duy Đường tròn", meta: "Tải xuống" }
+                ]
+            },
+            {
+                id: 8, track: "hinhhoc", sessionName: "Hình học - Buổi 3",
+                title: "Tứ giác nội tiếp và Dấu hiệu nhận biết", status: "locked", items: []
+            },
+            {
+                id: 9, track: "hinhhoc", sessionName: "Hình học - Buổi 4",
+                title: "Tiếp tuyến và Bài toán chứng minh thẳng hàng", status: "locked", items: []
+            },
+            {
+                id: 10, track: "hinhhoc", sessionName: "Hình học - Buổi 5",
+                title: "Quỹ tích và Bài toán cực trị hình học", status: "locked", items: []
+            }
+        ];
+
+        // 2. STATE MANAGEMENT
+        let currentTrack = 'daiso';
+
+        // 3. LOGIC CHUYỂN TAB
+        function switchTrack(track) {
+            currentTrack = track;
+            
+            const btnDaiSo = document.getElementById('tab-daiso');
+            const btnHinhHoc = document.getElementById('tab-hinhhoc');
+
+            if(track === 'daiso') {
+                btnDaiSo.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-math-600 transition-all z-10';
+                btnHinhHoc.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-900 transition-all z-10';
+            } else {
+                btnHinhHoc.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white shadow-sm text-geo-600 transition-all z-10';
+                btnDaiSo.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg text-gray-500 hover:text-gray-900 transition-all z-10';
+            }
+
+            renderCurriculum();
+        }
+
+        // 4. LỌC VÀ RENDER GIAO DIỆN
+        function renderCurriculum() {
+            const container = document.getElementById('curriculum-container');
+            let html = '';
+            
+            // Lọc dữ liệu theo tab đang chọn
+            const filteredData = courseData.filter(item => item.track === currentTrack);
+            
+            // Màu sắc chủ đạo tùy theo tab
+            const themeColor = currentTrack === 'daiso' ? 'math' : 'geo';
+
+            filteredData.forEach((lesson, index) => {
+                let containerClass, iconHtml, titleColor, statusText;
+                let isOpen = lesson.status === 'active' ? 'open' : ''; 
+                let rotateClass = lesson.status === 'active' ? 'rotate-180' : '';
+
+                if (lesson.status === 'completed') {
+                    containerClass = 'border-emerald-200 bg-emerald-50/40';
+                    iconHtml = `<div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-inner"><i class="fa-solid fa-check"></i></div>`;
+                    titleColor = 'text-gray-900';
+                    statusText = `<div class="text-[10px] font-bold text-emerald-600 uppercase mb-0.5">${lesson.sessionName} • Hoàn thành</div>`;
+                } else if (lesson.status === 'active') {
+                    containerClass = `border-${themeColor}-200 bg-white shadow-md ring-2 ring-${themeColor}-500/20`;
+                    iconHtml = `
+                        <div class="relative w-8 h-8 rounded-full bg-${themeColor}-100 text-${themeColor}-600 flex items-center justify-center text-sm font-black shadow-inner">
+                            ${index + 1}
+                            <span class="absolute -top-1 -right-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-${themeColor}-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-${themeColor}-500 border border-white"></span></span>
+                        </div>`;
+                    titleColor = `text-${themeColor}-900`;
+                    statusText = `<div class="text-[10px] font-bold text-${themeColor}-600 uppercase mb-0.5">${lesson.sessionName} • Đang học</div>`;
+                } else {
+                    containerClass = 'border-gray-100 bg-white opacity-75 hover:opacity-100 transition-opacity';
+                    iconHtml = `<div class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center text-sm font-black">${index + 1}</div>`;
+                    titleColor = 'text-gray-600';
+                    statusText = `<div class="text-[10px] font-bold text-gray-400 uppercase mb-0.5">${lesson.sessionName}</div>`;
+                }
+
+                // Render Sub-items (Video, Doc, Quiz)
+                let itemsHtml = '';
+                if (lesson.status === 'locked') {
+                    itemsHtml = `<div class="text-xs text-center text-gray-400 py-3 bg-gray-50 rounded-xl border border-gray-100"><i class="fa-solid fa-lock mr-1.5"></i> Vui lòng hoàn thành buổi trước để mở khóa</div>`;
+                } else if (lesson.items && lesson.items.length > 0) {
+                    lesson.items.forEach(item => {
+                        let itemIcon, itemStyle, rightSlot;
+                        
+                        if (item.type === 'video') {
+                            itemIcon = `<i class="fa-solid fa-circle-play ${item.active ? `text-${themeColor}-600` : `text-${themeColor}-500`}"></i>`;
+                            itemStyle = item.active ? `bg-${themeColor}-50 border-${themeColor}-200 text-${themeColor}-800 shadow-sm` : 'hover:bg-gray-50 text-gray-600 border-transparent hover:border-gray-200';
+                            rightSlot = `<span class="text-[10px] font-bold ${item.active ? `text-${themeColor}-600` : 'text-gray-400'}">${item.meta}</span>`;
+                        } else if (item.type === 'doc') {
+                            itemIcon = `<i class="fa-solid fa-file-pdf text-rose-500"></i>`;
+                            itemStyle = 'hover:bg-gray-50 text-gray-600 border-transparent hover:border-gray-200';
+                            rightSlot = `<i class="fa-solid fa-download text-[10px] text-gray-400"></i>`;
+                        } else if (item.type === 'quiz') {
+                            itemIcon = `<i class="fa-solid fa-pen-to-square ${item.completed ? 'text-emerald-500' : 'text-amber-500'}"></i>`;
+                            itemStyle = 'hover:bg-gray-50 text-gray-600 border-transparent hover:border-gray-200';
+                            let badgeClass = item.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+                            rightSlot = `<span class="text-[9px] ${badgeClass} px-2 py-0.5 rounded uppercase font-bold tracking-wider">${item.meta}</span>`;
+                        }
+
+                        itemsHtml += `
+                            <a href="#" class="flex items-center gap-3 p-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${itemStyle}">
+                                ${itemIcon}
+                                <span class="text-sm font-semibold flex-grow truncate">${item.title}</span>
+                                ${rightSlot}
+                            </a>`;
+                    });
+                } else {
+                    itemsHtml = `<div class="text-xs text-center text-gray-400 py-2">Nội dung đang được cập nhật</div>`;
+                }
+
+                html += `
+                <div class="border rounded-2xl overflow-hidden ${containerClass}">
+                    <button class="w-full p-4 flex items-center justify-between text-left focus:outline-none" onclick="toggleAccordion(this, '${lesson.status}')">
+                        <div class="flex items-center gap-3">
+                            ${iconHtml}
+                            <div>
+                                ${statusText}
+                                <div class="font-bold ${titleColor} text-sm line-clamp-1">${lesson.title}</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform duration-300 transform ${rotateClass}"></i>
+                    </button>
+                    <div class="accordion-content ${isOpen} bg-white/50 border-t border-black/5 px-4 space-y-1.5">
+                        ${itemsHtml}
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+
+            // Tính toán tiến độ chung (Dựa trên TOÀN BỘ courseData, không phải data đã lọc)
+            document.getElementById('track-lessons-count').innerText = `${filteredData.length} Buổi`;
+            
+            const totalSessions = courseData.length;
+            const completedSessions = courseData.filter(item => item.status === 'completed').length;
+            const percent = Math.round((completedSessions / totalSessions) * 100);
+            
+            document.getElementById('progress-text').innerText = `${percent}%`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+        }
+
+        // 5. EVENT HANDLER: Đóng mở bài học
+        function toggleAccordion(btn, status) {
+            if (status === 'locked') return;
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.fa-chevron-down');
+            content.classList.toggle('open');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Khởi chạy
+        window.onload = () => {
+            renderCurriculum();
+        };
+    </script>
+</body>
+</html>
